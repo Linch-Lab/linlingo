@@ -1,0 +1,43 @@
+# PopLingo 靜態網站 — Apache 設定（Hostinger / cPanel 適用）
+
+# 預設首頁
+DirectoryIndex index.html
+
+# 自訂 404
+ErrorDocument 404 /404.html
+
+# 強制 HTTPS（Hostinger 免費 SSL 啟用後生效）
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteCond %{HTTPS} off
+  RewriteCond %{HTTP:X-Forwarded-Proto} !https
+  RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+</IfModule>
+
+# Gzip 壓縮
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/plain text/css text/xml
+  AddOutputFilterByType DEFLATE application/javascript application/json
+  AddOutputFilterByType DEFLATE image/svg+xml
+</IfModule>
+
+# 瀏覽器快取
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType text/html        "access plus 1 hour"
+  ExpiresByType text/css         "access plus 1 month"
+  ExpiresByType image/png        "access plus 1 month"
+  ExpiresByType image/jpeg       "access plus 1 month"
+  ExpiresByType image/svg+xml    "access plus 1 month"
+  ExpiresByType image/x-icon     "access plus 1 year"
+  ExpiresByType application/zip  "access plus 1 year"
+</IfModule>
+
+# 基本安全標頭
+<IfModule mod_headers.c>
+  Header set X-Content-Type-Options "nosniff"
+  Header set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>
+
+# 不要列出目錄內容
+Options -Indexes

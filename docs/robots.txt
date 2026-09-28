@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+# 部署後把 YOUR_DOMAIN 改成你的網域
+Sitemap: https://YOUR_DOMAIN/sitemap.xml

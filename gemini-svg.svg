@@ -1,0 +1,113 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" width="100%" height="100%">
+  <defs>
+    <!-- 背景徽章柔和漸層 -->
+    <linearGradient id="badgeGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#58CC02"/>
+      <stop offset="100%" stop-color="#46A302"/>
+    </linearGradient>
+    
+    <!-- 身體主色調陰影漸層 -->
+    <linearGradient id="bodyGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#89E219"/>
+      <stop offset="100%" stop-color="#58CC02"/>
+    </linearGradient>
+  </defs>
+
+  <!-- 圓形現代徽章基底 -->
+  <circle cx="250" cy="250" r="236" fill="#46A302" />
+  <circle cx="250" cy="244" r="236" fill="url(#badgeGrad)" />
+  <circle cx="250" cy="244" r="216" fill="#FFFFFF" opacity="0.15" />
+  <circle cx="250" cy="244" r="206" fill="#F7FEE7" />
+
+  <!-- 展開的圓潤羽翼（對稱扁平幾何） -->
+  <g id="wings">
+    <!-- 左翼 -->
+    <path d="M 120 280 C 70 280 50 200 110 170 C 140 155 170 190 170 240 C 170 270 150 280 120 280 Z" fill="#58CC02" />
+    <path d="M 115 265 C 80 265 65 205 110 180 C 130 170 155 195 155 235 C 155 255 140 265 115 265 Z" fill="#89E219" />
+    
+    <!-- 右翼 -->
+    <path d="M 380 280 C 430 280 450 200 390 170 C 360 155 330 190 330 240 C 330 270 350 280 380 280 Z" fill="#58CC02" />
+    <path d="M 385 265 C 420 265 435 205 390 180 C 370 170 345 195 345 235 C 345 255 360 265 385 265 Z" fill="#89E219" />
+  </g>
+
+  <!-- 雙頭共融的圓潤身軀 -->
+  <path d="M 140 220 C 140 370 360 370 360 220 C 360 210 350 200 330 200 C 300 200 275 230 250 230 C 225 230 200 200 170 200 C 150 200 140 210 140 220 Z" fill="url(#bodyGrad)" />
+
+  <!-- 貓頭鷹胸腹部羽毛淺色塊 -->
+  <path d="M 170 260 C 170 375 330 375 330 260 C 290 290 210 290 170 260 Z" fill="#FFFFFF" />
+
+  <!-- === 左頭（正面大圓雙眼平面） === -->
+  <g id="left-head">
+    <!-- 圓潤頭型與羽角 -->
+    <path d="M 120 120 C 110 70 150 75 170 100 C 190 100 220 120 220 160 C 220 210 130 210 130 160 C 130 140 125 130 120 120 Z" fill="#89E219" />
+    <path d="M 130 85 L 148 108 L 122 114 Z" fill="#58CC02" />
+
+    <!-- 雙眼位於同一個平面的大眼眶 -->
+    <circle cx="158" cy="150" r="25" fill="#FFFFFF" />
+    <circle cx="202" cy="150" r="25" fill="#FFFFFF" />
+    
+    <!-- 瞳孔 (略微朝向右側互動) -->
+    <circle cx="162" cy="150" r="14" fill="#1E293B" />
+    <circle cx="206" cy="150" r="14" fill="#1E293B" />
+    
+    <!-- 眼神高光點 -->
+    <circle cx="166" cy="146" r="5" fill="#FFFFFF" />
+    <circle cx="210" cy="146" r="5" fill="#FFFFFF" />
+    
+    <!-- 橘色小喙 -->
+    <path d="M 174 156 Q 180 174 186 156 Z" fill="#FF9600" />
+  </g>
+
+  <!-- === 右頭（正面大圓雙眼平面） === -->
+  <g id="right-head">
+    <!-- 圓潤頭型與羽角 -->
+    <path d="M 380 120 C 390 70 350 75 330 100 C 310 100 280 120 280 160 C 280 210 370 210 370 160 C 370 140 375 130 380 120 Z" fill="#89E219" />
+    <path d="M 370 85 L 378 114 L 352 108 Z" fill="#58CC02" />
+
+    <!-- 雙眼位於同一個平面的大眼眶 -->
+    <circle cx="298" cy="150" r="25" fill="#FFFFFF" />
+    <circle cx="342" cy="150" r="25" fill="#FFFFFF" />
+    
+    <!-- 瞳孔 (略微朝向左側互動) -->
+    <circle cx="294" cy="150" r="14" fill="#1E293B" />
+    <circle cx="338" cy="150" r="14" fill="#1E293B" />
+    
+    <!-- 眼神高光點 -->
+    <circle cx="290" cy="146" r="5" fill="#FFFFFF" />
+    <circle cx="334" cy="146" r="5" fill="#FFFFFF" />
+    
+    <!-- 橘色小喙 -->
+    <path d="M 314 156 Q 320 174 326 156 Z" fill="#FF9600" />
+  </g>
+
+  <!-- 中央核心：語言翻譯對稱對話氣泡與互換流動箭頭（無文字） -->
+  <g id="translation-symbol" transform="translate(250, 305)">
+    <!-- 雙向對話氣泡底襯 -->
+    <rect x="-56" y="-36" width="50" height="34" rx="12" fill="#1CB0F6" />
+    <path d="M -20 -10 L -10 -2 L -24 -2 Z" fill="#1CB0F6" />
+
+    <rect x="6" y="-18" width="50" height="34" rx="12" fill="#FFC800" />
+    <path d="M 20 8 L 10 16 L 24 16 Z" fill="#FFC800" />
+
+    <!-- 氣泡內的簡潔聲波/語言訊息符號點 -->
+    <circle cx="-38" cy="-19" r="3.5" fill="#FFFFFF" />
+    <circle cx="-25" cy="-19" r="3.5" fill="#FFFFFF" />
+    <circle cx="24" cy="-1" r="3.5" fill="#FFFFFF" />
+    <circle cx="37" cy="-1" r="3.5" fill="#FFFFFF" />
+
+    <!-- 中心循環互譯箭頭環 -->
+    <path d="M -16 28 C -6 36 6 36 16 28" fill="none" stroke="#2B72C4" stroke-width="4" stroke-linecap="round" />
+    <polygon points="18,24 23,32 14,32" fill="#2B72C4" />
+
+    <path d="M 16 -40 C 6 -48 -6 -48 -16 -40" fill="none" stroke="#2B72C4" stroke-width="4" stroke-linecap="round" />
+    <polygon points="-18,-36 -23,-44 -14,-44" fill="#2B72C4" />
+  </g>
+
+  <!-- 底部多鄰國經典圓潤橙色小爪 -->
+  <g id="feet" fill="#FF9600">
+    <rect x="200" y="372" width="16" height="24" rx="8" />
+    <rect x="220" y="374" width="16" height="24" rx="8" />
+    <rect x="264" y="374" width="16" height="24" rx="8" />
+    <rect x="284" y="372" width="16" height="24" rx="8" />
+  </g>
+</svg>

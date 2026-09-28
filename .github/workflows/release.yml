@@ -1,0 +1,60 @@
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: 安裝依賴
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install pyinstaller pystray pillow
+
+      - name: 讀取版本
+        id: ver
+        shell: pwsh
+        run: |
+          $v = (Select-String -Path app.py -Pattern 'APP_VERSION\s*=\s*"([^"]+)"').Matches[0].Groups[1].Value
+          echo "version=$v" >> $env:GITHUB_OUTPUT
+
+      - name: 建置 exe
+        run: |
+          python -m PyInstaller --noconfirm --onedir --windowed ^
+            --name PopLingo ^
+            --version-file version.txt ^
+            --hidden-import pystray._win32 --collect-all pystray ^
+            app.py
+
+      - name: 產生 SHA256
+        shell: pwsh
+        run: |
+          Get-FileHash "dist/PopLingo/PopLingo.exe" -Algorithm SHA256 |
+            ForEach-Object { "$($_.Hash)  PopLingo.exe" } |
+            Out-File -Encoding utf8 "dist/SHA256SUMS.txt"
+          Get-Content "dist/SHA256SUMS.txt"
+
+      - name: 壓縮發佈檔
+        shell: pwsh
+        run: Compress-Archive -Path "dist/PopLingo/*" -DestinationPath "dist/PopLingo-${{ steps.ver.outputs.version }}-win64.zip" -Force
+
+      - name: 建立 Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: PopLingo v${{ steps.ver.outputs.version }}
+          generate_release_notes: true
+          files: |
+            dist/PopLingo-${{ steps.ver.outputs.version }}-win64.zip
+            dist/SHA256SUMS.txt

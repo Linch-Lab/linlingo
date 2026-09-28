@@ -1,5 +1,6 @@
 這個資料夾放網站的圖片素材。建議放入：
 
+  logo-draft.svg     網站 logo（草稿中，尚未完成）
   app.ico            產品圖示（同時作為 favicon），建議 256x256 多尺寸 .ico
   sponsor_qr.png     贊助 QR code（Ko-fi 或 LINE），建議 400x400 以上
   screenshot-1.png   主畫面截圖（卡片運作中）

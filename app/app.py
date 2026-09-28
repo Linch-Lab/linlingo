@@ -112,6 +112,7 @@ HELP_TEXT = """使用說明
 ──────────
 Ctrl+Alt+T         開啟 / 關閉翻譯模式
 Ctrl+Alt+C         把焦點拉回卡片（焦點跑到別的視窗時用）
+Ctrl+Alt+Enter     隨處插入譯文（焦點不在卡片時用，例如 PowerPoint）
 Enter              回填翻譯（卡片清空後再按 = 送出）
 Ctrl+Enter         只回填、不送出
 Ctrl+Shift+Enter   回填原文
@@ -215,6 +216,8 @@ DEFAULT_CONFIG = {
     "check_update_on_start": True,   # 啟動時檢查更新
     "focus_vk": 0x43,          # 'C' ｜ 把焦點拉回卡片的熱鍵
     "focus_mods": 0x0003,      # ALT|CTRL => Ctrl+Alt+C
+    "commit_global_vk": 0x0D,      # Enter ｜ 隨處可用的「插入譯文」熱鍵
+    "commit_global_mods": 0x0003,  # ALT|CTRL => Ctrl+Alt+Enter
     "auto_space": True,        # 回填英文等語言時自動補一個空格
 }
 
@@ -649,6 +652,7 @@ class KeyboardHook:
         self._focus_ok = False
         self.toggle_id = 0x0001
         self.focus_id = 0x0002
+        self.commit_id = 0x0003
 
     def start(self):
         self._running = True
@@ -681,6 +685,10 @@ class KeyboardHook:
         fvk = int(self.app.cfg.get("focus_vk", 0x43))          # 'C'
         fmods = int(self.app.cfg.get("focus_mods", MOD_ALT | MOD_CONTROL))
         self._focus_ok = bool(user32.RegisterHotKey(None, self.focus_id, fmods, fvk))
+        # 第三組熱鍵：隨處可用的「插入譯文」（焦點不在卡片時也能用）
+        gvk = int(self.app.cfg.get("commit_global_vk", 0x0D))     # Enter
+        gmods = int(self.app.cfg.get("commit_global_mods", MOD_ALT | MOD_CONTROL))
+        self._commit_ok = bool(user32.RegisterHotKey(None, self.commit_id, gmods, gvk))
 
         self.hook = user32.SetWindowsHookExW(
             WH_KEYBOARD_LL, self._proc, kernel32.GetModuleHandleW(None), 0)
@@ -699,11 +707,15 @@ class KeyboardHook:
                 if msg.wParam == self.focus_id:
                     self.app.events.put(("focus_card",))
                     continue
+                if msg.wParam == self.commit_id:
+                    self.app.events.put(("commit_global",))
+                    continue
             user32.TranslateMessage(ctypes.byref(msg))
             user32.DispatchMessageW(ctypes.byref(msg))
         user32.UnhookWindowsHookEx(self.hook)
         user32.UnregisterHotKey(None, self.toggle_id)
         user32.UnregisterHotKey(None, self.focus_id)
+        user32.UnregisterHotKey(None, self.commit_id)
 
     def stop(self):
         self._running = False
@@ -1085,6 +1097,7 @@ class TranslatorApp:
         self._focus_key = None
         self._fallback_pos = None
         self._last_commit_hwnd = None
+        self._last_commit_time = 0.0
 
         self.source_var = tk.StringVar(value=cfg.get("source_lang", "自動偵測"))
         self.target_var = tk.StringVar(value=cfg.get("target_lang", "英文"))
@@ -1289,6 +1302,11 @@ class TranslatorApp:
 
     # ---------- 提交 ----------
     def commit(self, original_not_translation):
+        # 防止「全域熱鍵」與「卡片按鍵」同時觸發造成重複回填
+        now = time.time()
+        if now - self._last_commit_time < 0.35:
+            return
+        self._last_commit_time = now
         if original_not_translation:
             text = self.card.get_orig()
         else:
@@ -1315,7 +1333,10 @@ class TranslatorApp:
         else:
             self.status_var.set("✓ 已複製到剪貼簿（無目標輸入框）")
         self.card.clear()
-        self.card.focus()  # 卡片保持開啟並聚焦，可繼續輸入下一句
+        # 等目標程式處理完貼上，再把焦點收回卡片。
+        # PowerPoint 這類較重的程式如果立刻被搶走焦點，會來不及完成貼上
+        # （結果變成貼成新物件、或貼不上），所以這裡延後 180ms。
+        self.root.after(180, self.card.focus)
 
     # 不使用空格分詞的語言（補空格反而錯誤）
     NO_SPACE_LANGS = ("繁體中文", "簡體中文", "日文")
@@ -1428,6 +1449,12 @@ class TranslatorApp:
             self.toggle_mode()
         elif kind == "focus_card":
             self.focus_card()
+        elif kind == "commit_global":
+            # 焦點不在卡片時（例如在 PowerPoint 裡），也能直接插入譯文
+            if self.mode_on and self.card.is_visible():
+                self.commit(False)
+            else:
+                self.status_var.set("翻譯模式未開啟")
         elif kind == "result":
             if ev[2] == self.translate_gen:
                 self.card.set_trans(ev[1])

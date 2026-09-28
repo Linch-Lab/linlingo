@@ -172,6 +172,22 @@ certutil -hashfile PopLingo-win64.zip SHA256
 
 ---
 
+## 贊助
+
+PopLingo 完全免費、開源、**沒有廣告、沒有追蹤、沒有付費版本**。
+如果它替你省下了一些時間，歡迎請我喝一杯咖啡。
+
+| 方式 | 連結 |
+|---|---|
+| Ko-fi | https://ko-fi.com/bill_linch |
+| TWQR 台灣Pay | [官網贊助區](https://poplingo.billlinch.com/#sponsor) 掃碼即付 |
+
+贊助者名單：[SUPPORTERS.md](SUPPORTERS.md)
+
+**我不會做的事**：不把功能鎖在贊助後面、不加廣告或追蹤、不情緒勒索、不讓贊助者插隊。
+
+---
+
 ## 授權
 
 [MIT License](LICENSE)

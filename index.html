@@ -6,6 +6,12 @@
 <title>PopLingo - Windows 即時翻譯工具</title>
 <meta name="description" content="PopLingo 是 Windows 全域熱鍵即時翻譯工具：在任何輸入框按 Ctrl+Alt+T，在彈出卡片輸入你的語言，立即翻譯並回填。支援注音輸入法、多螢幕、完全本地模型。開源、免費。">
 <link rel="icon" href="assets/app.ico">
+<link rel="canonical" href="https://poplingo.billlinch.com/">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://poplingo.billlinch.com/">
+<meta property="og:title" content="PopLingo - Windows 全域熱鍵即時翻譯工具">
+<meta property="og:description" content="在任何輸入框按 Ctrl+Alt+T，用你的語言打字，立即翻譯並回填。支援注音輸入法、多螢幕、可完全本地部署。開源免費。">
+<meta name="twitter:card" content="summary">
 <style>
   body {
     font-family: system-ui, "Segoe UI", "Microsoft JhengHei", "PingFang TC", sans-serif;
@@ -241,27 +247,85 @@ DeepSeek / GPT 等雲端模型。適合注重隱私、或不想付費的使用�
 
 <h2 id="sponsor">贊助</h2>
 
-<p>PopLingo 是免費的開源專案。如果它對你有幫助，歡迎小額贊助支持後續維護。</p>
+<p>
+PopLingo 完全免費、開源、<b>沒有廣告、沒有追蹤、不收集任何資料</b>，也沒有付費版本。
+開發時間與 API 測試費用由我一個人負擔。
+</p>
+
+<p>
+它不是公司產品，就是一個人在下班後寫給自己用的工具。
+如果它替你省下了一些時間，歡迎請我喝一杯咖啡 —— 這是我唯一的要求。
+</p>
+
+<h3>選一個方式</h3>
 
 <table>
   <tr>
-    <th style="width:34%">方式</th>
-    <th>連結 / 說明</th>
+    <th style="width:24%">方式</th>
+    <th style="width:32%">適合</th>
+    <th>連結</th>
   </tr>
   <tr>
     <td><b>Ko-fi</b></td>
-    <!-- 改成你的 Ko-fi 連結 -->
-    <td><a href="https://ko-fi.com/YOUR_KOFI">ko-fi.com/YOUR_KOFI</a></td>
+    <td>信用卡 / PayPal，國際通用</td>
+    <td><a href="https://ko-fi.com/bill_linch">ko-fi.com/bill_linch</a></td>
   </tr>
   <tr>
-    <td><b>LINE</b></td>
-    <td>掃描下方 QR code</td>
+    <td><b>TWQR 台灣Pay</b></td>
+    <td>台灣本地，手機掃碼即付</td>
+    <td>見下方 QR code</td>
   </tr>
 </table>
 
+<h3>QR code（TWQR 台灣Pay）</h3>
+
+<p><img class="qr" src="assets/twqr-donate.jpg" alt="TWQR 台灣Pay 收款碼"></p>
+
+<h3>要贊助多少？</h3>
+
+<p>不用多想，選一個順眼的就好。金額不是重點，<b>「知道有人在用」才是</b>。</p>
+
+<table>
+  <tr><th style="width:24%">金額</th><th>相當於</th></tr>
+  <tr><td><b>NT$60</b></td><td>一杯手搖飲 —— 讓我知道這個工具真的有人用</td></tr>
+  <tr><td><b>NT$150</b></td><td>一頓晚餐 —— 補貼這個月的 API 測試費用</td></tr>
+  <tr><td><b>NT$500</b></td><td>讓我撥出一個週末專心修問題、加功能</td></tr>
+</table>
+
+<h3>贊助者名單</h3>
+
+<p><b>目前尚無贊助者 —— 你可以是第一位。</b></p>
+
 <p>
-<!-- 把你的 QR 圖檔放到 docs/assets/sponsor_qr.png -->
-<img class="qr" src="assets/sponsor_qr.png" alt="贊助 QR code">
+贊助後可以選擇把名字列在這裡（或完全匿名）。
+<b>前 20 位會永久標記為「創始贊助者」</b>，
+因為在還沒有人知道這個專案時就願意支持，這件事值得被記住。
+</p>
+
+<h3>這個月的目標</h3>
+
+<table>
+  <tr><th style="width:24%">目標</th><th>目前進度</th></tr>
+  <tr><td>NT$1,000 維護基金</td><td>NT$0 / 1,000（尚未達成）</td></tr>
+</table>
+
+<p>
+達標後，我會優先處理目前最大的已知限制：
+<b>用 UI Automation 精確取得瀏覽器中的文字游標位置</b>，
+讓卡片在 Chrome、Discord 這類自繪游標的應用裡也能精準貼齊。
+</p>
+
+<h3>我不會做的事</h3>
+
+<ul>
+  <li><b>不會把功能鎖在贊助後面</b> —— 所有功能對所有人都開放，沒有付費版</li>
+  <li><b>不會加廣告、追蹤或資料收集</b></li>
+  <li><b>不會情緒勒索</b> —— 沒贊助我也會繼續維護，只是能投入的時間不同</li>
+  <li><b>不會因為你贊助就插隊</b> —— 你的 issue 跟其他人一樣照順序排</li>
+</ul>
+
+<p style="color:#666">
+唯一的小回饋：可以選擇列名，以及先拿到下一版的測試檔。
 </p>
 
 <h2>授權與原始碼</h2>

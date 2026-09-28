@@ -58,8 +58,8 @@ GITHUB_REPO = "Linch-Lab/poplingo"
 UPDATE_URL = "https://raw.githubusercontent.com/{}/main/latest.json".format(GITHUB_REPO)
 RELEASES_URL = "https://github.com/{}/releases/latest".format(GITHUB_REPO)
 
-WEBSITE_URL = "https://YOUR_DOMAIN/"          # 官網（部署後改成你的網域）
-SPONSOR_URL = "https://ko-fi.com/YOUR_KOFI"   # 贊助頁
+WEBSITE_URL = "https://poplingo.billlinch.com/"   # 官網
+SPONSOR_URL = "https://ko-fi.com/bill_linch"      # 贊助頁
 
 # 翻譯服務預設值：(顯示名稱, API 網址, [常見模型], 申請 / 說明網址)
 # 程式送出請求時會接上 "/chat/completions"，所以這裡只填到 base 為止。

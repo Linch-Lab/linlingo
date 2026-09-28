@@ -34,19 +34,27 @@ jobs:
           echo "version=$v" >> $env:GITHUB_OUTPUT
 
       - name: 建置 exe
-        run: python -m PyInstaller --noconfirm --onedir --windowed --name PopLingo --version-file version.txt --hidden-import pystray._win32 --collect-all pystray app.py
-
-      - name: 產生 SHA256
-        shell: pwsh
-        run: |
-          Get-FileHash "dist/PopLingo/PopLingo.exe" -Algorithm SHA256 |
-            ForEach-Object { "$($_.Hash)  PopLingo.exe" } |
-            Out-File -Encoding utf8 "dist/SHA256SUMS.txt"
-          Get-Content "dist/SHA256SUMS.txt"
+        run: >
+          python -m PyInstaller --noconfirm --onedir --windowed --name PopLingo
+          --version-file version.txt --hidden-import pystray._win32 --collect-all pystray
+          --exclude-module numpy --exclude-module scipy --exclude-module pandas
+          --exclude-module matplotlib --exclude-module yaml --exclude-module psutil
+          --exclude-module setuptools --exclude-module pip
+          app.py
 
       - name: 壓縮發佈檔
         shell: pwsh
         run: Compress-Archive -Path "dist/PopLingo/*" -DestinationPath "dist/PopLingo-win64.zip" -Force
+
+      - name: 產生 SHA256
+        shell: pwsh
+        run: |
+          # 必須在壓縮之後執行，且雜湊對象是「zip 檔」本身，
+          # 才能對應網站上 certutil -hashfile PopLingo-win64.zip SHA256 的驗證方式
+          Get-FileHash "dist/PopLingo-win64.zip" -Algorithm SHA256 |
+            ForEach-Object { "$($_.Hash)  PopLingo-win64.zip" } |
+            Out-File -Encoding utf8 "dist/SHA256SUMS.txt"
+          Get-Content "dist/SHA256SUMS.txt"
 
       - name: 建立 Release
         uses: softprops/action-gh-release@v2

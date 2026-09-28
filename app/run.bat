@@ -1,7 +1,13 @@
 @echo off
 rem ============================================================
-rem  PopLingo 啟動腳本（除錯用，會顯示命令列視窗）
-rem  日常使用請雙擊 PopLingo.vbs —— 完全不會出現任何視窗
+rem  PopLingo launcher - debug version (shows a console window)
+rem  For everyday use double-click PopLingo.vbs instead: it
+rem  starts with no window at all.
+rem
+rem  IMPORTANT: keep this file pure ASCII.
+rem  cmd.exe reads .bat files using the system ANSI codepage (CP950
+rem  on a Traditional Chinese system). Multi-byte comments corrupt its
+rem  byte-offset tracking and make it misread EARLIER lines.
 rem ============================================================
 setlocal
 cd /d "%~dp0"
@@ -10,7 +16,7 @@ set "LOGDIR=%APPDATA%\PopLingo"
 if not exist "%LOGDIR%" mkdir "%LOGDIR%" >nul 2>nul
 set "LOG=%LOGDIR%\launcher.log"
 
-rem 1) 優先使用 pythonw（無命令列視窗）
+rem 1) Prefer pythonw (no console window)
 where pythonw >nul 2>nul
 if %errorlevel%==0 (
     >>"%LOG%" echo [%date% %time%] launch via pythonw
@@ -27,12 +33,12 @@ if %errorlevel%==0 (
 
 >>"%LOG%" echo [%date% %time%] pythonw not found, fallback to python
 
-rem 2) 找不到 pythonw 就退回 python（會顯示命令列，便於看錯誤訊息）
+rem 2) Fall back to python (shows a console so errors are visible)
 where python >nul 2>nul
 if %errorlevel%==0 (
     echo [INFO] pythonw.exe not found; running with python.exe.
     echo        A console window will stay open in this mode.
-    echo        For a windowless launch, close this and use PopLingo.vbs.
+    echo        For a windowless launch use PopLingo.vbs instead.
     echo.
     python app.py
     goto :end

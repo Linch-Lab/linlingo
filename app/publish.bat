@@ -1,8 +1,12 @@
 @echo off
 rem ============================================================
 rem  PopLingo publish helper
-rem  本檔位於 app\ ，實際操作的是「上一層」的倉庫根目錄。
-rem  日常推送其實只要用 git 指令即可，本檔是給不熟悉 git 的人用的。
+rem  This file lives in app\ but operates on the repository root
+rem  (one level up). Normally you can just use git directly.
+rem
+rem  IMPORTANT: keep this file pure ASCII.
+rem  cmd.exe reads .bat files using the system ANSI codepage; multi-byte
+rem  comments corrupt its byte-offset tracking and make it misread lines.
 rem ============================================================
 setlocal
 cd /d "%~dp0.."
@@ -54,20 +58,19 @@ set /p MSG="Commit message: "
 if "%MSG%"=="" set "MSG=update"
 
 git commit -m "%MSG%"
-if "%REPO%"=="" goto after_push
-git remote remove origin >nul 2>nul
-git remote add origin "%REPO%"
-git push -u origin main
-goto after_push
 
-:after_push
+if not "%REPO%"=="" (
+    git remote remove origin >nul 2>nul
+    git remote add origin "%REPO%"
+)
 git push
+
 echo.
 echo ==============================
 echo   [OK] Pushed.
 echo ==============================
 echo.
-echo To publish a release (auto-builds the EXE on GitHub):
-echo     git tag v1.0.0
-echo     git push origin v1.0.0
+echo To publish a release (CI builds the EXE and creates the Release):
+echo     git tag v1.0.1
+echo     git push origin v1.0.1
 pause

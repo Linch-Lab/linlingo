@@ -21,8 +21,11 @@ Thumbs.db
 desktop.ini
 *.log
 
-# 發行檔：只保留版本說明（.md / SHA256SUMS.txt）
+# 發行檔：只保留版本說明（.md）
 # 二進位檔一律走 GitHub Releases，不進版控
 **/releases/*/PopLingo-win64/
 **/releases/*/*.zip
 **/releases/*/*.exe
+# SHA256SUMS.txt 由建置產生，且每次建置都不同（PyInstaller 不可重現），
+# 正式的那份在 GitHub Release 上，因此不進版控以免與 Release 版本混淆
+**/releases/*/SHA256SUMS.txt

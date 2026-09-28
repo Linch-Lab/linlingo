@@ -1,6 +1,12 @@
 @echo off
 rem ============================================================
-rem  PopLingo 環境診斷 —— 若程式無法啟動，請執行本檔並回報結果
+rem  PopLingo environment diagnostic
+rem  Run this if the program will not start, then report the output.
+rem
+rem  IMPORTANT: keep this file pure ASCII.
+rem  cmd.exe reads .bat files using the system ANSI codepage (CP950
+rem  on a Traditional Chinese system). Multi-byte comments corrupt its
+rem  byte-offset tracking and make it misread EARLIER lines.
 rem ============================================================
 cd /d "%~dp0"
 

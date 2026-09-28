@@ -46,7 +46,7 @@ jobs:
 
       - name: 壓縮發佈檔
         shell: pwsh
-        run: Compress-Archive -Path "dist/PopLingo/*" -DestinationPath "dist/PopLingo-${{ steps.ver.outputs.version }}-win64.zip" -Force
+        run: Compress-Archive -Path "dist/PopLingo/*" -DestinationPath "dist/PopLingo-win64.zip" -Force
 
       - name: 建立 Release
         uses: softprops/action-gh-release@v2
@@ -54,5 +54,5 @@ jobs:
           name: PopLingo v${{ steps.ver.outputs.version }}
           generate_release_notes: true
           files: |
-            app/dist/PopLingo-${{ steps.ver.outputs.version }}-win64.zip
+            app/dist/PopLingo-win64.zip
             app/dist/SHA256SUMS.txt

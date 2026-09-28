@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PopLingo - Instant Translate for Windows</title>
+<meta name="description" content="Press Ctrl+Alt+T in any text box, type in your own language, and the translation is inserted for you. Full IME support, multi-monitor, works fully offline. Open source.">
+<link rel="canonical" href="https://poplingo.billlinch.com/en/">
+<link rel="alternate" hreflang="zh-Hant" href="https://poplingo.billlinch.com/">
+<link rel="alternate" hreflang="en" href="https://poplingo.billlinch.com/en/">
+<link rel="icon" href="../assets/app.ico">
+<link rel="stylesheet" href="../assets/style.css">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://poplingo.billlinch.com/en/">
+<meta property="og:title" content="PopLingo - Instant Translate for Windows">
+<meta property="og:description" content="Press Ctrl+Alt+T in any text box, type in your own language, and the translation is inserted for you. Open source, works fully offline.">
+<meta name="twitter:card" content="summary">
+</head>
+<body>
+
+<header class="site">
+  <p class="brand"><a href="index.html">PopLingo</a></p>
+  <span class="ver">v1.0.0</span>
+  <span class="spacer"></span>
+  <span class="lang"><a href="../index.html">繁體中文</a></span>
+</header>
+
+<nav class="site">
+  <a class="here" href="index.html">Home</a>
+  <a href="download.html">Download</a>
+  <a href="guide.html">Guide</a>
+  <a href="setup.html">Setup</a>
+  <a href="faq.html">FAQ</a>
+  <a href="sponsor.html">Sponsor</a>
+</nav>
+
+<h1>Say what you mean, in any language</h1>
+<p class="lead">
+Press <code>Ctrl+Alt+T</code> in any text box and a small translucent card appears next to your caret.
+Type in <b>your own language</b>, see the translation instantly, then press <code>Enter</code> to insert it
+into the box you were already using. No switching windows, no copy-paste.
+</p>
+
+<div class="dl">
+  <a class="big" href="https://github.com/Linch-Lab/poplingo/releases/latest/download/PopLingo-win64.zip">Download PopLingo (Windows 64-bit)</a>
+  <div class="meta">
+    Portable ZIP ｜ No installation ｜ No Python required<br>
+    <a href="download.html">Other download options &amp; verification</a> ·
+    <a href="setup.html">Translation engine setup</a>
+  </div>
+</div>
+
+<p class="note">
+<b>Why doesn't it hook your keyboard?</b>
+Most similar tools use a low-level keyboard hook to intercept typing, and that
+<b>breaks Chinese, Japanese and Korean IME composition</b> — IMEs need the real
+keystrokes to build characters. PopLingo instead uses the card itself as the input
+surface, so Zhuyin, Pinyin and others work normally.
+</p>
+
+<h2>Features</h2>
+
+<div class="cards">
+  <div class="card"><b>Global hotkey</b><span><code>Ctrl+Alt+T</code> toggles it in any application</span></div>
+  <div class="card"><b>IME friendly</b><span>Zhuyin, Pinyin and other IMEs compose normally</span></div>
+  <div class="card"><b>Minimal card</b><span>Translucent, sticks to the caret, auto-resizes, draggable</span></div>
+  <div class="card"><b>Translation styles</b><span>Academic, business, or casual tone</span></div>
+  <div class="card"><b>Second language</b><span>If the source already is the target language, use a fallback</span></div>
+  <div class="card"><b>Follows your focus</b><span>Click another text box and the card moves there by itself</span></div>
+  <div class="card"><b>Multi-monitor</b><span>Negative coordinates and mixed DPI fully supported</span></div>
+  <div class="card"><b>Fully offline</b><span>Pair with a local Ollama model — nothing leaves your PC</span></div>
+  <div class="card"><b>14 providers</b><span>DeepSeek, OpenAI, Qwen, Groq… all in a dropdown</span></div>
+  <div class="card"><b>MIT licensed</b><span>One Python file you can audit and build yourself</span></div>
+</div>
+
+<h2>Quick start</h2>
+
+<ol>
+  <li><a href="download.html">Download</a> and unzip <code>PopLingo-win64.zip</code></li>
+  <li>Run <code>PopLingo.exe</code> — a tray icon appears</li>
+  <li><a href="setup.html">Set up a translation engine</a> (your own API key, or a free local model)</li>
+  <li>Click any text box → press <code>Ctrl+Alt+T</code> → type → <code>Enter</code></li>
+</ol>
+
+<p>For the full key reference, see the <a href="guide.html">guide</a>.</p>
+
+<h2>License &amp; source</h2>
+
+<ul>
+  <li>License: <a href="https://github.com/Linch-Lab/poplingo/blob/main/LICENSE">MIT</a></li>
+  <li>Source: <a href="https://github.com/Linch-Lab/poplingo">github.com/Linch-Lab/poplingo</a></li>
+  <li>Changelog: <a href="https://github.com/Linch-Lab/poplingo/blob/main/CHANGELOG.md">CHANGELOG.md</a></li>
+  <li>Issues: <a href="https://github.com/Linch-Lab/poplingo/issues">GitHub Issues</a></li>
+</ul>
+
+<footer class="site">
+  PopLingo — Instant translation for Windows ·
+  <a href="https://github.com/Linch-Lab/poplingo/blob/main/LICENSE">MIT License</a><br>
+  <a href="https://github.com/Linch-Lab/poplingo">GitHub</a> ·
+  <a href="https://github.com/Linch-Lab/poplingo/blob/main/CHANGELOG.md">Changelog</a> ·
+  <a href="https://github.com/Linch-Lab/poplingo/issues">Issues</a> ·
+  <a href="sponsor.html">Sponsor</a><br>
+  A static page. No JavaScript, no tracking.
+</footer>
+
+</body>
+</html>

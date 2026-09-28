@@ -1,8 +1,79 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://poplingo.billlinch.com/</loc>
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://poplingo.billlinch.com/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://poplingo.billlinch.com/en/"/>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://poplingo.billlinch.com/download.html</loc>
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://poplingo.billlinch.com/download.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://poplingo.billlinch.com/en/download.html"/>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://poplingo.billlinch.com/guide.html</loc>
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://poplingo.billlinch.com/guide.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://poplingo.billlinch.com/en/guide.html"/>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://poplingo.billlinch.com/setup.html</loc>
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://poplingo.billlinch.com/setup.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://poplingo.billlinch.com/en/setup.html"/>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://poplingo.billlinch.com/faq.html</loc>
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://poplingo.billlinch.com/faq.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://poplingo.billlinch.com/en/faq.html"/>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://poplingo.billlinch.com/sponsor.html</loc>
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://poplingo.billlinch.com/sponsor.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://poplingo.billlinch.com/en/sponsor.html"/>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://poplingo.billlinch.com/en/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://poplingo.billlinch.com/en/"/>
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://poplingo.billlinch.com/"/>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://poplingo.billlinch.com/en/download.html</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://poplingo.billlinch.com/en/guide.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://poplingo.billlinch.com/en/setup.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://poplingo.billlinch.com/en/faq.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://poplingo.billlinch.com/en/sponsor.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
   </url>
 </urlset>

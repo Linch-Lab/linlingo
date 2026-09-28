@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Translation engine setup - PopLingo</title>
+<meta name="description" content="How to configure PopLingo: DeepSeek, OpenAI, Qwen and 11 more providers, plus a completely free local Ollama setup.">
+<link rel="canonical" href="https://poplingo.billlinch.com/en/setup.html">
+<link rel="alternate" hreflang="zh-Hant" href="https://poplingo.billlinch.com/setup.html">
+<link rel="alternate" hreflang="en" href="https://poplingo.billlinch.com/en/setup.html">
+<link rel="icon" href="../assets/app.ico">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+
+<header class="site">
+  <p class="brand"><a href="index.html">PopLingo</a></p>
+  <span class="ver">v1.0.0</span>
+  <span class="spacer"></span>
+  <span class="lang"><a href="../setup.html">繁體中文</a></span>
+</header>
+
+<nav class="site">
+  <a href="index.html">Home</a>
+  <a href="download.html">Download</a>
+  <a href="guide.html">Guide</a>
+  <a class="here" href="setup.html">Setup</a>
+  <a href="faq.html">FAQ</a>
+  <a href="sponsor.html">Sponsor</a>
+</nav>
+
+<h1>Translation engine setup</h1>
+<p class="lead">
+PopLingo speaks the <b>OpenAI-compatible</b> API, so any service that offers
+<code>/chat/completions</code> works. Pick a service in Settings, paste your key, done.
+</p>
+
+<h2>Where to configure</h2>
+<p>Right-click the tray icon → <b>Settings</b> → the <b>Translation</b> tab.</p>
+
+<table>
+  <tr><th style="width:24%">Field</th><th>Description</th></tr>
+  <tr><td><b>Provider</b></td><td>Dropdown. Choosing one <b>auto-fills</b> the API URL and model list.</td></tr>
+  <tr><td><b>API URL</b></td><td>Editable (used with the "Custom…" provider).</td></tr>
+  <tr><td><b>API Key</b></td><td>Your key from the provider.</td></tr>
+  <tr><td><b>Model</b></td><td>Dropdown, but you can type any model name the provider offers.</td></tr>
+  <tr><td><b>Get API key</b></td><td>Opens the provider's signup page.</td></tr>
+</table>
+
+<h2>Option A: DeepSeek (recommended)</h2>
+
+<p>Good Chinese and English quality at a low price; the best default choice.</p>
+
+<ol>
+  <li>Sign up at <a href="https://platform.deepseek.com/">platform.deepseek.com</a></li>
+  <li>Open "API keys" → create a key and copy it</li>
+  <li>In PopLingo Settings:
+
+    <table>
+      <tr><th style="width:32%">Field</th><th>Value</th></tr>
+      <tr><td>Provider</td><td><code>DeepSeek</code></td></tr>
+      <tr><td>API URL</td><td><code>https://api.deepseek.com</code></td></tr>
+      <tr><td>Model</td><td><code>deepseek-flash</code> (cheap and fast)<br>or <code>deepseek-v4-pro</code> (higher quality)</td></tr>
+    </table>
+  </li>
+  <li>Click Save and type something in the card to test</li>
+</ol>
+
+<p class="note">
+DeepSeek is a paid service billed by usage. Translation uses very few tokens, so typical
+monthly cost is tiny.
+</p>
+
+<h2>Option B: other cloud providers</h2>
+
+<table>
+  <tr>
+    <th style="width:26%">Provider</th>
+    <th style="width:44%">API URL</th>
+    <th>Example model</th>
+  </tr>
+  <tr><td>OpenAI</td><td><code>https://api.openai.com/v1</code></td><td><code>gpt-4o-mini</code></td></tr>
+  <tr><td>Alibaba Qwen (DashScope)</td><td><code>https://dashscope.aliyuncs.com/compatible-mode/v1</code></td><td><code>qwen-plus</code></td></tr>
+  <tr><td>Zhipu GLM</td><td><code>https://open.bigmodel.cn/api/paas/v4</code></td><td><code>glm-4-flash</code></td></tr>
+  <tr><td>Kimi (Moonshot)</td><td><code>https://api.moonshot.cn/v1</code></td><td><code>moonshot-v1-8k</code></td></tr>
+  <tr><td>SiliconFlow</td><td><code>https://api.siliconflow.cn/v1</code></td><td><code>deepseek-ai/DeepSeek-V3</code></td></tr>
+  <tr><td>Tencent Hunyuan</td><td><code>https://api.hunyuan.cloud.tencent.com/v1</code></td><td><code>hunyuan-turbo</code></td></tr>
+  <tr><td>Volcengine Doubao</td><td><code>https://ark.cn-beijing.volces.com/api/v3</code></td><td><code>doubao-1.5-lite-32k</code></td></tr>
+  <tr><td>MiniMax</td><td><code>https://api.minimax.chat/v1</code></td><td><code>abab6.5s-chat</code></td></tr>
+  <tr><td>Groq</td><td><code>https://api.groq.com/openai/v1</code></td><td><code>llama-3.3-70b-versatile</code></td></tr>
+  <tr><td>Mistral</td><td><code>https://api.mistral.ai/v1</code></td><td><code>mistral-small-latest</code></td></tr>
+  <tr><td>OpenRouter</td><td><code>https://openrouter.ai/api/v1</code></td><td><code>openai/gpt-4o-mini</code></td></tr>
+</table>
+
+<p>
+All of these are built into the dropdown, so you never type the URL by hand.
+Model names change over time, so the model field accepts free text.
+</p>
+
+<h2 id="local">Option C: fully local (Ollama)</h2>
+
+<p>
+Don't want to send anything to the cloud? Run a model on your own machine with
+<a href="https://ollama.com/">Ollama</a> — <b>free, offline, and nothing leaves your PC</b>.
+</p>
+
+<h3>Steps</h3>
+
+<ol>
+  <li>Download and install Ollama from <a href="https://ollama.com/download">ollama.com/download</a></li>
+  <li>In Command Prompt, pull a model (about 4–6&nbsp;GB, one time):
+    <pre>ollama pull qwen2.5:7b</pre>
+  </li>
+  <li>Confirm it downloaded:
+    <pre>ollama list</pre>
+  </li>
+  <li>In PopLingo Settings:
+
+    <table>
+      <tr><th style="width:32%">Field</th><th>Value</th></tr>
+      <tr><td>Provider</td><td><code>Ollama (local)</code></td></tr>
+      <tr><td>API URL</td><td><code>http://localhost:11434/v1</code></td></tr>
+      <tr><td>API Key</td><td><code>ollama</code> (ignored locally, any value works)</td></tr>
+      <tr><td>Model</td><td><code>qwen2.5:7b</code></td></tr>
+    </table>
+  </li>
+</ol>
+
+<h3>Choosing a model</h3>
+
+<table>
+  <tr><th style="width:26%">Model</th><th style="width:22%">Memory</th><th>Notes</th></tr>
+  <tr><td><code>qwen2.5:3b</code></td><td>~4&nbsp;GB</td><td>Lightest, acceptable quality</td></tr>
+  <tr><td><code>qwen2.5:7b</code></td><td>~8&nbsp;GB</td><td><b>Recommended</b> balance of quality and speed</td></tr>
+  <tr><td><code>qwen2.5:14b</code></td><td>~16&nbsp;GB</td><td>Better quality, needs a stronger machine</td></tr>
+  <tr><td><code>gemma3:4b</code></td><td>~5&nbsp;GB</td><td>Decent multilingual support</td></tr>
+</table>
+
+<p class="warn">
+<b>Note:</b> the first response from a local model is slow (it has to load into memory),
+and quality is usually a bit below cloud models like DeepSeek or GPT.
+Best for privacy-conscious users, or if you'd rather not pay.
+</p>
+
+<h3>LM Studio</h3>
+<p>
+You can also use <a href="https://lmstudio.ai/">LM Studio</a>: start its local server,
+then pick "LM Studio (local)" in Settings. The API URL is <code>http://localhost:1234/v1</code>.
+</p>
+
+<h2>Languages and style</h2>
+
+<table>
+  <tr><th style="width:32%">Field</th><th>Description</th></tr>
+  <tr><td><b>Source language</b></td><td>Defaults to "Auto detect" and lets the model decide.</td></tr>
+  <tr><td><b>Target language</b></td><td>Defaults to English.</td></tr>
+  <tr><td><b>Second language</b></td><td>Used when the source already is the target language.
+      "(None)" disables it. See the <a href="guide.html">guide</a>.</td></tr>
+  <tr><td><b>Style</b></td><td>Academic (default) / Business / Casual.</td></tr>
+  <tr><td><b>Delay (ms)</b></td><td>How long to wait after you stop typing before translating. Default 500.</td></tr>
+</table>
+
+<h2>Privacy</h2>
+<p>
+Only the <b>text you type</b> is sent, and only to the <b>API you configured</b>.
+PopLingo itself collects nothing and contains no tracking or telemetry.
+With a local Ollama model, your text never leaves your computer.
+</p>
+
+<footer class="site">
+  PopLingo — Instant translation for Windows ·
+  <a href="https://github.com/Linch-Lab/poplingo/blob/main/LICENSE">MIT License</a><br>
+  <a href="https://github.com/Linch-Lab/poplingo">GitHub</a> ·
+  <a href="https://github.com/Linch-Lab/poplingo/blob/main/CHANGELOG.md">Changelog</a> ·
+  <a href="https://github.com/Linch-Lab/poplingo/issues">Issues</a> ·
+  <a href="sponsor.html">Sponsor</a><br>
+  A static page. No JavaScript, no tracking.
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FAQ - PopLingo</title>
+<meta name="description" content="PopLingo FAQ: SmartScreen warnings, cost, privacy, missing tray icon, supported operating systems.">
+<link rel="canonical" href="https://poplingo.billlinch.com/en/faq.html">
+<link rel="alternate" hreflang="zh-Hant" href="https://poplingo.billlinch.com/faq.html">
+<link rel="alternate" hreflang="en" href="https://poplingo.billlinch.com/en/faq.html">
+<link rel="icon" href="../assets/app.ico">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+
+<header class="site">
+  <p class="brand"><a href="index.html">PopLingo</a></p>
+  <span class="ver">v1.0.0</span>
+  <span class="spacer"></span>
+  <span class="lang"><a href="../faq.html">繁體中文</a></span>
+</header>
+
+<nav class="site">
+  <a href="index.html">Home</a>
+  <a href="download.html">Download</a>
+  <a href="guide.html">Guide</a>
+  <a href="setup.html">Setup</a>
+  <a class="here" href="faq.html">FAQ</a>
+  <a href="sponsor.html">Sponsor</a>
+</nav>
+
+<h1>Frequently asked questions</h1>
+
+<h2>Install and run</h2>
+
+<h3>Windows says "Unknown publisher" or shows a SmartScreen warning</h3>
+<p>
+Because this project has no code-signing certificate. That is <b>normal for all free
+open-source software</b> and does not mean it is malware. Click "More info" → "Run anyway",
+or <b>build it yourself from source</b> (<code>build.bat</code>) so you know the binary matches
+the code. You can also verify the file with SHA256 on the
+<a href="download.html#verify">download page</a>.
+</p>
+
+<h3>Do I need Python installed?</h3>
+<p>
+No. The ZIP bundles everything — just unzip and run <code>PopLingo.exe</code>.
+Python is only needed if you want to run or build from source.
+</p>
+
+<h3>My antivirus flags it</h3>
+<p>
+PyInstaller binaries are occasionally false-flagged; this is a well-known industry issue.
+Verify the SHA256 or build from source.
+</p>
+
+<h3>Is macOS or Linux supported?</h3>
+<p>
+No — Windows 10 / 11 (64-bit) only, because the program relies heavily on Windows APIs.
+</p>
+
+<h2>Using it</h2>
+
+<h3>Why doesn't it just intercept my typing?</h3>
+<p>
+Most similar tools use a low-level keyboard hook, but that
+<b>breaks CJK input method composition</b> — IMEs need the real keystrokes to build characters.
+PopLingo instead makes the card itself the input surface, so Zhuyin, Pinyin and other IMEs
+work normally.
+</p>
+
+<h3>Does it interfere with the text box I was using?</h3>
+<p>
+No. PopLingo <b>never hooks or modifies</b> your text box. Clicking, editing with Backspace,
+pressing Enter to send — all keep working exactly as before. You only type in the card
+while translation mode is on.
+</p>
+
+<h3>I can't find the tray icon</h3>
+<p>
+Windows hides new tray icons by default. Click the <b>^</b> arrow near the clock and drag
+the PopLingo icon onto the taskbar to pin it.
+</p>
+
+<h3>Translation keeps failing</h3>
+<p>
+Check in order: is the API key correct, does the account have balance, is the network working.
+The status bar shows the specific error. If you use Ollama, make sure it is running
+(<code>ollama list</code> should show your models).
+</p>
+
+<h3>Can it translate whole documents?</h3>
+<p>
+It accepts multi-line input (<code>Shift+Enter</code>), but PopLingo is built for quick,
+in-context sentences. For long documents, use a dedicated translation service.
+</p>
+
+<h2>Cost and privacy</h2>
+
+<h3>Does it cost anything?</h3>
+<p>
+The program itself is <b>completely free and open source</b> (MIT). Translation cost depends
+on the engine you pick: cloud APIs bill by usage (translation uses very little), and a local
+Ollama model is <b>completely free</b>.
+</p>
+
+<h3>Is my text uploaded anywhere?</h3>
+<p>
+Only the <b>text you type</b> is sent, and only to the <b>API you configured yourself</b>.
+PopLingo collects nothing, contains no tracking and no telemetry.
+With a local Ollama model, nothing leaves your computer.
+</p>
+
+<h3>Can I use it offline?</h3>
+<p>
+Yes, with a <a href="setup.html#local">local Ollama model</a> it works fully offline.
+Cloud APIs of course need a network connection.
+</p>
+
+<h2>Configuration</h2>
+
+<h3>Where is the config file?</h3>
+<p>
+<code>%APPDATA%\PopLingo\config.json</code> — paste that into the File Explorer address bar.
+Settings survive updates and reinstalls.
+</p>
+
+<h3>How do I make it portable?</h3>
+<p>
+Create an empty file named <code>portable.flag</code> next to <code>PopLingo.exe</code>.
+Settings will then live in the program folder.
+</p>
+
+<h3>Can I change the hotkeys?</h3>
+<p>
+Yes — edit <code>toggle_vk</code> / <code>toggle_mods</code> (toggle) and
+<code>focus_vk</code> / <code>focus_mods</code> (focus the card) in the config file.
+Modifiers add up: <code>ALT=1</code>, <code>CTRL=2</code>, <code>SHIFT=4</code>, <code>WIN=8</code>.
+A graphical hotkey editor is on the roadmap.
+</p>
+
+<h3>How do I turn off the update check at startup?</h3>
+<p>Set <code>check_update_on_start</code> to <code>false</code> in the config file.</p>
+
+<h3>Is there an English UI?</h3>
+<p>
+The application UI is currently Traditional Chinese. An English UI is on the roadmap.
+</p>
+
+<h2>Other</h2>
+
+<h3>Translation quality isn't great</h3>
+<p>
+Try a larger model (<code>deepseek-v4-pro</code>, <code>qwen2.5:14b</code>), switch the
+translation style, or set the source language explicitly instead of using "Auto detect".
+</p>
+
+<h3>Can I use it commercially?</h3>
+<p>
+Yes. The MIT license allows use, modification and distribution, including commercial use.
+</p>
+
+<h3>Found a bug or want a feature?</h3>
+<p>
+Please open an <a href="https://github.com/Linch-Lab/poplingo/issues">issue</a>.
+Include your Windows version, the PopLingo version, and the application where the problem
+occurs (especially if it only happens in one app).
+</p>
+
+<footer class="site">
+  PopLingo — Instant translation for Windows ·
+  <a href="https://github.com/Linch-Lab/poplingo/blob/main/LICENSE">MIT License</a><br>
+  <a href="https://github.com/Linch-Lab/poplingo">GitHub</a> ·
+  <a href="https://github.com/Linch-Lab/poplingo/blob/main/CHANGELOG.md">Changelog</a> ·
+  <a href="https://github.com/Linch-Lab/poplingo/issues">Issues</a> ·
+  <a href="sponsor.html">Sponsor</a><br>
+  A static page. No JavaScript, no tracking.
+</footer>
+
+</body>
+</html>

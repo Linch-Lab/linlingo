@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>翻譯引擎設定 - PopLingo</title>
+<meta name="description" content="PopLingo 翻譯引擎設定教學：DeepSeek、OpenAI、阿里雲通義等 14 家服務，以及完全免費的 Ollama 本地部署。">
+<link rel="canonical" href="https://poplingo.billlinch.com/setup.html">
+<link rel="alternate" hreflang="en" href="https://poplingo.billlinch.com/en/setup.html">
+<link rel="icon" href="assets/app.ico">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<header class="site">
+  <p class="brand"><a href="index.html">PopLingo</a></p>
+  <span class="ver">v1.0.0</span>
+  <span class="spacer"></span>
+  <span class="lang"><a href="en/setup.html">English</a></span>
+</header>
+
+<nav class="site">
+  <a href="index.html">首頁</a>
+  <a href="download.html">下載</a>
+  <a href="guide.html">使用說明</a>
+  <a class="here" href="setup.html">翻譯引擎設定</a>
+  <a href="faq.html">常見問題</a>
+  <a href="sponsor.html">贊助</a>
+</nav>
+
+<h1>翻譯引擎設定</h1>
+<p class="lead">
+PopLingo 使用 <b>OpenAI 相容</b>的 API，任何支援 <code>/chat/completions</code> 的服務都能用。
+只要在設定裡選一個服務、貼上自己的金鑰即可。
+</p>
+
+<h2>設定位置</h2>
+<p>系統匣圖示右鍵 →「設定」→「<b>翻譯</b>」分頁。</p>
+
+<table>
+  <tr><th style="width:24%">欄位</th><th>說明</th></tr>
+  <tr><td><b>翻譯服務</b></td><td>下拉選單。選好之後 API 網址與模型清單會<b>自動帶入</b>。</td></tr>
+  <tr><td><b>API 網址</b></td><td>可手動修改（選「自訂…」時使用）。</td></tr>
+  <tr><td><b>API Key</b></td><td>你向服務商申請的金鑰。</td></tr>
+  <tr><td><b>模型</b></td><td>下拉選單，也可自行輸入服務商提供的最新模型名稱。</td></tr>
+  <tr><td><b>取得 API Key</b></td><td>按鈕，會開啟該服務的申請頁面。</td></tr>
+</table>
+
+<h2>選項 A：DeepSeek（推薦）</h2>
+
+<p>中文翻譯品質好、價格低，是目前最推薦的選擇。</p>
+
+<ol>
+  <li>到 <a href="https://platform.deepseek.com/">platform.deepseek.com</a> 註冊</li>
+  <li>左側選「API keys」→ 建立新的金鑰，複製起來</li>
+  <li>PopLingo 設定裡填入：
+
+    <table>
+      <tr><th style="width:32%">欄位</th><th>值</th></tr>
+      <tr><td>翻譯服務</td><td><code>DeepSeek</code></td></tr>
+      <tr><td>API 網址</td><td><code>https://api.deepseek.com</code></td></tr>
+      <tr><td>模型</td><td><code>deepseek-flash</code>（便宜快速）<br>或 <code>deepseek-v4-pro</code>（品質較高）</td></tr>
+    </table>
+  </li>
+  <li>按「儲存」，回到卡片打字測試</li>
+</ol>
+
+<p class="note">
+DeepSeek 為付費服務，依用量計價。翻譯的 token 用量很小，一般使用每月花費極低。
+</p>
+
+<h2>選項 B：其他雲端服務</h2>
+
+<table>
+  <tr>
+    <th style="width:26%">服務</th>
+    <th style="width:44%">API 網址</th>
+    <th>常見模型</th>
+  </tr>
+  <tr><td>OpenAI</td><td><code>https://api.openai.com/v1</code></td><td><code>gpt-4o-mini</code></td></tr>
+  <tr><td>阿里雲通義千問</td><td><code>https://dashscope.aliyuncs.com/compatible-mode/v1</code></td><td><code>qwen-plus</code></td></tr>
+  <tr><td>智譜 GLM</td><td><code>https://open.bigmodel.cn/api/paas/v4</code></td><td><code>glm-4-flash</code></td></tr>
+  <tr><td>Kimi（Moonshot）</td><td><code>https://api.moonshot.cn/v1</code></td><td><code>moonshot-v1-8k</code></td></tr>
+  <tr><td>矽基流動 SiliconFlow</td><td><code>https://api.siliconflow.cn/v1</code></td><td><code>deepseek-ai/DeepSeek-V3</code></td></tr>
+  <tr><td>騰訊混元</td><td><code>https://api.hunyuan.cloud.tencent.com/v1</code></td><td><code>hunyuan-turbo</code></td></tr>
+  <tr><td>火山方舟（豆包）</td><td><code>https://ark.cn-beijing.volces.com/api/v3</code></td><td><code>doubao-1.5-lite-32k</code></td></tr>
+  <tr><td>MiniMax</td><td><code>https://api.minimax.chat/v1</code></td><td><code>abab6.5s-chat</code></td></tr>
+  <tr><td>Groq</td><td><code>https://api.groq.com/openai/v1</code></td><td><code>llama-3.3-70b-versatile</code></td></tr>
+  <tr><td>Mistral</td><td><code>https://api.mistral.ai/v1</code></td><td><code>mistral-small-latest</code></td></tr>
+  <tr><td>OpenRouter</td><td><code>https://openrouter.ai/api/v1</code></td><td><code>openai/gpt-4o-mini</code></td></tr>
+</table>
+
+<p>
+上表都已經內建在下拉選單裡，不需要手動輸入網址。
+模型名稱會隨服務商更新，因此模型欄位可以自由輸入。
+</p>
+
+<h2 id="local">選項 C：完全本地部署（Ollama）</h2>
+
+<p>
+不想把內容送到雲端？用 <a href="https://ollama.com/">Ollama</a> 在本機執行模型，
+<b>免費、離線、資料完全不出你的電腦</b>。
+</p>
+
+<h3>步驟</h3>
+
+<ol>
+  <li>到 <a href="https://ollama.com/download">ollama.com/download</a> 下載並安裝 Ollama</li>
+  <li>開啟命令提示字元，下載一個模型（約 4–6&nbsp;GB，只需一次）：
+    <pre>ollama pull qwen2.5:7b</pre>
+  </li>
+  <li>確認模型已下載：
+    <pre>ollama list</pre>
+  </li>
+  <li>PopLingo 設定填入：
+
+    <table>
+      <tr><th style="width:32%">欄位</th><th>值</th></tr>
+      <tr><td>翻譯服務</td><td><code>Ollama（本地）</code></td></tr>
+      <tr><td>API 網址</td><td><code>http://localhost:11434/v1</code></td></tr>
+      <tr><td>API Key</td><td><code>ollama</code>（本地不驗證，隨便填即可）</td></tr>
+      <tr><td>模型</td><td><code>qwen2.5:7b</code></td></tr>
+    </table>
+  </li>
+</ol>
+
+<h3>模型選擇建議</h3>
+
+<table>
+  <tr><th style="width:26%">模型</th><th style="width:22%">記憶體需求</th><th>說明</th></tr>
+  <tr><td><code>qwen2.5:3b</code></td><td>約 4&nbsp;GB</td><td>最輕量，翻譯品質尚可</td></tr>
+  <tr><td><code>qwen2.5:7b</code></td><td>約 8&nbsp;GB</td><td><b>推薦</b>，品質與速度平衡</td></tr>
+  <tr><td><code>qwen2.5:14b</code></td><td>約 16&nbsp;GB</td><td>品質更好，需較強硬體</td></tr>
+  <tr><td><code>gemma3:4b</code></td><td>約 5&nbsp;GB</td><td>多語支援不錯</td></tr>
+</table>
+
+<p class="warn">
+<b>注意：</b>本地模型首次回應較慢（需要先把模型載入記憶體），
+翻譯品質通常也略遜於 DeepSeek、GPT 等雲端模型。
+適合注重隱私、或不想付費的使用者。
+</p>
+
+<h3>LM Studio</h3>
+<p>
+也可以使用 <a href="https://lmstudio.ai/">LM Studio</a>：
+在軟體中啟動本機伺服器後，設定裡選「LM Studio（本地）」，
+API 網址為 <code>http://localhost:1234/v1</code>。
+</p>
+
+<h2>語言與風格</h2>
+
+<table>
+  <tr><th style="width:32%">欄位</th><th>說明</th></tr>
+  <tr><td><b>來源語言</b></td><td>預設「自動偵測」，交給模型判斷。</td></tr>
+  <tr><td><b>目標語言</b></td><td>預設「英文」。</td></tr>
+  <tr><td><b>第二外語</b></td><td>原文已是目標語言時改翻成此語言。選「（無）」＝停用。
+      詳細行為見 <a href="guide.html">使用說明</a>。</td></tr>
+  <tr><td><b>翻譯風格</b></td><td>學術（預設）／商務／閒聊。</td></tr>
+  <tr><td><b>延遲（毫秒）</b></td><td>停止輸入後多久開始翻譯，預設 500。</td></tr>
+</table>
+
+<h2>隱私</h2>
+<p>
+只有你輸入的<b>文字</b>會送到<b>你自己設定的 API</b>。
+PopLingo 本身不收集任何資料、不含任何追蹤或統計。
+使用 Ollama 本地模型時，內容完全不會離開你的電腦。
+</p>
+
+<footer class="site">
+  PopLingo — Windows 全域熱鍵即時翻譯工具 ·
+  <a href="https://github.com/Linch-Lab/poplingo/blob/main/LICENSE">MIT License</a><br>
+  <a href="https://github.com/Linch-Lab/poplingo">GitHub</a> ·
+  <a href="https://github.com/Linch-Lab/poplingo/blob/main/CHANGELOG.md">變更紀錄</a> ·
+  <a href="https://github.com/Linch-Lab/poplingo/issues">問題回報</a> ·
+  <a href="sponsor.html">贊助</a><br>
+  本頁為靜態網頁，不使用 JavaScript、不收集任何資料。
+</footer>
+
+</body>
+</html>

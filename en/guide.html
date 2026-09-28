@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Guide - PopLingo</title>
+<meta name="description" content="PopLingo usage guide: workflow, keyboard shortcuts, the floating card, and the system tray icon.">
+<link rel="canonical" href="https://poplingo.billlinch.com/en/guide.html">
+<link rel="alternate" hreflang="zh-Hant" href="https://poplingo.billlinch.com/guide.html">
+<link rel="alternate" hreflang="en" href="https://poplingo.billlinch.com/en/guide.html">
+<link rel="icon" href="../assets/app.ico">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+
+<header class="site">
+  <p class="brand"><a href="index.html">PopLingo</a></p>
+  <span class="ver">v1.0.0</span>
+  <span class="spacer"></span>
+  <span class="lang"><a href="../guide.html">繁體中文</a></span>
+</header>
+
+<nav class="site">
+  <a href="index.html">Home</a>
+  <a href="download.html">Download</a>
+  <a class="here" href="guide.html">Guide</a>
+  <a href="setup.html">Setup</a>
+  <a href="faq.html">FAQ</a>
+  <a href="sponsor.html">Sponsor</a>
+</nav>
+
+<h1>Guide</h1>
+<p class="lead">PopLingo is designed to <b>stay out of your way</b> — it never hijacks your text box or changes how you type.</p>
+
+<h2>Workflow</h2>
+
+<ol>
+  <li>Click into any text box (chat, form, search field…) to place the caret</li>
+  <li>Press <code>Ctrl+Alt+T</code>. A translucent card appears <b>next to the caret</b> and takes focus</li>
+  <li>Type in the card — your IME works normally and the translation appears as you type</li>
+  <li>Press <code>Enter</code> to <b>insert the translation</b> into the original text box</li>
+  <li>Press <code>Enter</code> again on an empty card to send, exactly like pressing Enter in the box</li>
+  <li>Press <code>Ctrl+Alt+T</code> again to turn translation mode off</li>
+</ol>
+
+<h2>Keyboard shortcuts</h2>
+
+<table>
+  <tr><th style="width:36%">Key</th><th>Action</th></tr>
+  <tr><td><code>Ctrl+Alt+T</code></td><td>Toggle translation mode</td></tr>
+  <tr><td><code>Ctrl+Alt+C</code></td><td><b>Bring focus back to the card</b> (when focus wandered off)</td></tr>
+  <tr><td><code>Enter</code></td><td>Insert the translation; on an empty card, send</td></tr>
+  <tr><td><code>Ctrl+Enter</code></td><td>Insert only, never send</td></tr>
+  <tr><td><code>Ctrl+Shift+Enter</code></td><td>Insert the <b>original</b> text instead</td></tr>
+  <tr><td><code>Shift+Enter</code></td><td>New line (for multi-line messages)</td></tr>
+  <tr><td><code>Esc</code></td><td>Cancel and clear the card</td></tr>
+</table>
+
+<h3>About Ctrl+Alt+C</h3>
+<p>
+After you click around other text boxes, focus leaves the card.
+Instead of hunting for the card, press <code>Ctrl+Alt+C</code> and focus jumps straight back
+so you can keep typing. (This hotkey can be changed in the config file.)
+</p>
+
+<h2>The floating card</h2>
+
+<ul>
+  <li><b>Follows the caret</b>: it appears below the text caret, not the mouse pointer</li>
+  <li><b>Auto-resizes</b>: the more you type, the taller it gets</li>
+  <li><b>Draggable</b>: drag the thin bar at the top, or the translation area</li>
+  <li><b>Translucent</b>: it never fully hides what is behind it</li>
+  <li><b>Follows your focus</b>: click another text box and the card moves there</li>
+  <li><b>Stays where you put it</b>: dragging to a second monitor works correctly</li>
+</ul>
+
+<h3>Card appearance</h3>
+<p>
+Right-click the tray icon → <b>Settings</b> → the <b>Card appearance</b> tab.
+You can change the <b>font size</b> and <b>colour</b> of both the input text and the
+translation text, with a <b>live preview</b> above that updates as you adjust.
+</p>
+
+<h2>System tray icon</h2>
+
+<table>
+  <tr><th style="width:36%">State</th><th>Icon</th></tr>
+  <tr><td>Translation mode <b>on</b></td><td><b>Lit</b> (blue)</td></tr>
+  <tr><td>Translation mode <b>off</b></td><td><b>Greyed out</b></td></tr>
+</table>
+
+<p><b>Right-click</b> the icon for the menu:</p>
+
+<ul>
+  <li><b>Settings</b> — translation service, languages, style, card appearance</li>
+  <li><b>Help</b> — an in-app version of this guide</li>
+  <li><b>Sponsor</b> — opens the sponsor page</li>
+  <li><b>Check for updates</b></li>
+  <li><b>Quit</b> — fully exits the program</li>
+</ul>
+
+<p class="note">
+Closing the help window does <b>not</b> exit the program — it only hides it.
+Use <b>Quit</b> in the tray menu to exit.
+</p>
+
+<h2>Translation styles</h2>
+
+<table>
+  <tr><th style="width:24%">Style</th><th>When to use</th></tr>
+  <tr><td><b>Academic</b> (default)</td><td>Formal and precise. If the source has no trailing period it is treated as a title and translated in title style.</td></tr>
+  <tr><td><b>Business</b></td><td>Professional, polite, formal business tone.</td></tr>
+  <tr><td><b>Casual</b></td><td>Natural, conversational tone.</td></tr>
+</table>
+
+<h2>Second language (conditional translation)</h2>
+
+<table>
+  <tr><th style="width:44%">Source language</th><th>Result</th></tr>
+  <tr><td>Not the target language (e.g. Chinese)</td><td>Translated into the <b>target language</b> (e.g. English)</td></tr>
+  <tr><td>Already the target language (e.g. English)</td><td>Translated into the <b>second language</b> (e.g. German)</td></tr>
+</table>
+
+<p>
+With "target: English" and "second language: German", typing Chinese gives English and
+typing English gives German. It does <b>not</b> produce two translations at once.
+Set the second language to "(None)" to disable it.
+</p>
+
+<h2>Troubleshooting</h2>
+
+<h3>Nothing happens after launching</h3>
+<p>Check that the tray icon exists. Translation mode must be toggled on with <code>Ctrl+Alt+T</code>.</p>
+
+<h3>The hotkey does nothing</h3>
+<p>Another program may have claimed <code>Ctrl+Alt+T</code>. Change it in
+<code>%APPDATA%\PopLingo\config.json</code>.</p>
+
+<h3>Translation keeps failing</h3>
+<p>Check your API key (see <a href="setup.html">Setup</a>) and read the status bar message.
+Common causes: invalid key, insufficient balance, no network.</p>
+
+<h3>It pasted in the wrong place</h3>
+<p>Don't switch windows right before inserting. If it fails, the translation is already on
+your clipboard — just press <code>Ctrl+V</code>.</p>
+
+<h3>Turn off the update check at startup</h3>
+<p>Set <code>check_update_on_start</code> to <code>false</code> in the config file.</p>
+
+<footer class="site">
+  PopLingo — Instant translation for Windows ·
+  <a href="https://github.com/Linch-Lab/poplingo/blob/main/LICENSE">MIT License</a><br>
+  <a href="https://github.com/Linch-Lab/poplingo">GitHub</a> ·
+  <a href="https://github.com/Linch-Lab/poplingo/blob/main/CHANGELOG.md">Changelog</a> ·
+  <a href="https://github.com/Linch-Lab/poplingo/issues">Issues</a> ·
+  <a href="sponsor.html">Sponsor</a><br>
+  A static page. No JavaScript, no tracking.
+</footer>
+
+</body>
+</html>

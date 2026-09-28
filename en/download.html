@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Download - PopLingo</title>
+<meta name="description" content="Download PopLingo v1.0.0: portable ZIP for Windows 64-bit, with SHA256 verification and system requirements.">
+<link rel="canonical" href="https://poplingo.billlinch.com/en/download.html">
+<link rel="alternate" hreflang="zh-Hant" href="https://poplingo.billlinch.com/download.html">
+<link rel="alternate" hreflang="en" href="https://poplingo.billlinch.com/en/download.html">
+<link rel="icon" href="../assets/app.ico">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+
+<header class="site">
+  <p class="brand"><a href="index.html">PopLingo</a></p>
+  <span class="ver">v1.0.0</span>
+  <span class="spacer"></span>
+  <span class="lang"><a href="../download.html">繁體中文</a></span>
+</header>
+
+<nav class="site">
+  <a href="index.html">Home</a>
+  <a class="here" href="download.html">Download</a>
+  <a href="guide.html">Guide</a>
+  <a href="setup.html">Setup</a>
+  <a href="faq.html">FAQ</a>
+  <a href="sponsor.html">Sponsor</a>
+</nav>
+
+<h1>Download</h1>
+<p class="lead">Current version <b>v1.0.0</b> ｜ Windows 10 / 11 (64-bit)</p>
+
+<div class="dl">
+  <a class="big" href="https://github.com/Linch-Lab/poplingo/releases/latest/download/PopLingo-win64.zip">Download PopLingo-win64.zip</a>
+  <div class="meta">
+    Portable ｜ Unzip and run ｜ No Python required<br>
+    The download starts immediately. If nothing happens, see <a href="#trouble">troubleshooting</a>.
+  </div>
+</div>
+
+<h2>Files</h2>
+
+<table>
+  <tr>
+    <th style="width:34%">File</th>
+    <th>Description</th>
+  </tr>
+  <tr>
+    <td><b>PopLingo-win64.zip</b></td>
+    <td>The application. Unzip and run <code>PopLingo.exe</code>. No installation needed.</td>
+  </tr>
+  <tr>
+    <td><b>SHA256SUMS.txt</b></td>
+    <td>Checksum so you can verify the download.
+      <a href="https://github.com/Linch-Lab/poplingo/releases/latest">Get it from Releases</a></td>
+  </tr>
+  <tr>
+    <td><b>Source code</b></td>
+    <td>A single Python file you can read or build yourself:
+      <a href="https://github.com/Linch-Lab/poplingo">GitHub</a></td>
+  </tr>
+  <tr>
+    <td><b>All versions</b></td>
+    <td><a href="https://github.com/Linch-Lab/poplingo/releases">Release list</a> with changelogs</td>
+  </tr>
+</table>
+
+<h2 id="verify">Verify the download (optional)</h2>
+
+<p>In Command Prompt:</p>
+<pre>certutil -hashfile PopLingo-win64.zip SHA256</pre>
+<p>Compare the output with <code>SHA256SUMS.txt</code>. If they match, the file is intact.</p>
+
+<h2>System requirements</h2>
+
+<table>
+  <tr><th style="width:34%">Item</th><th>Requirement</th></tr>
+  <tr><td>OS</td><td>Windows 10 / 11 (64-bit)</td></tr>
+  <tr><td>Python</td><td><b>Not required</b> (bundled)</td></tr>
+  <tr><td>Network</td><td>Needed for cloud APIs; fully offline with a local Ollama model</td></tr>
+  <tr><td>Memory</td><td>8&nbsp;GB+ recommended if you run a local model</td></tr>
+  <tr><td>Translation engine</td><td>Your own API key, or a free local Ollama model</td></tr>
+</table>
+
+<h2>Installation</h2>
+
+<ol>
+  <li>Unzip <code>PopLingo-win64.zip</code> anywhere (e.g. <code>C:\Tools\PopLingo</code>)</li>
+  <li>Run <code>PopLingo.exe</code></li>
+  <li>A PopLingo icon appears in the system tray</li>
+  <li>Right-click it → <b>Settings</b> → enter your translation engine details
+      (see <a href="setup.html">Setup</a>)</li>
+</ol>
+
+<p class="note">
+If you can't find the tray icon, Windows hides new icons by default.
+Click the <b>^</b> arrow near the clock and drag the PopLingo icon onto the taskbar.
+</p>
+
+<h3>Portable mode</h3>
+<p>
+By default settings live in <code>%APPDATA%\PopLingo\config.json</code>, so updating never
+loses them. To keep settings next to the program instead (for example on a USB stick),
+create an empty file named <code>portable.flag</code> beside <code>PopLingo.exe</code>.
+</p>
+
+<h2 id="trouble">Troubleshooting</h2>
+
+<h3>The button did nothing?</h3>
+<p>
+The button links directly to the file on GitHub Releases. If your network blocks GitHub,
+use the <a href="https://github.com/Linch-Lab/poplingo/releases">Releases page</a> instead,
+or a proxy.
+</p>
+
+<h3>Windows shows "Unknown publisher" or a SmartScreen warning?</h3>
+<p>
+Because this project has no code-signing certificate. That is <b>normal for all free
+open-source software</b> and does not mean it is malware. You can click "More info" →
+"Run anyway", or <b>build it yourself from source</b> to be sure the binary matches the code.
+You can also verify the SHA256 checksum above.
+</p>
+
+<h3>Antivirus flags it?</h3>
+<p>
+PyInstaller binaries are occasionally false-flagged. Verify the SHA256 or build from source.
+</p>
+
+<footer class="site">
+  PopLingo — Instant translation for Windows ·
+  <a href="https://github.com/Linch-Lab/poplingo/blob/main/LICENSE">MIT License</a><br>
+  <a href="https://github.com/Linch-Lab/poplingo">GitHub</a> ·
+  <a href="https://github.com/Linch-Lab/poplingo/blob/main/CHANGELOG.md">Changelog</a> ·
+  <a href="https://github.com/Linch-Lab/poplingo/issues">Issues</a> ·
+  <a href="sponsor.html">Sponsor</a><br>
+  A static page. No JavaScript, no tracking.
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>下載 - PopLingo</title>
+<meta name="description" content="下載 PopLingo v1.0.0：Windows 64 位元免安裝 ZIP，含 SHA256 驗證方式與系統需求。">
+<link rel="canonical" href="https://poplingo.billlinch.com/download.html">
+<link rel="alternate" hreflang="en" href="https://poplingo.billlinch.com/en/download.html">
+<link rel="icon" href="assets/app.ico">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<header class="site">
+  <p class="brand"><a href="index.html">PopLingo</a></p>
+  <span class="ver">v1.0.0</span>
+  <span class="spacer"></span>
+  <span class="lang"><a href="en/download.html">English</a></span>
+</header>
+
+<nav class="site">
+  <a href="index.html">首頁</a>
+  <a class="here" href="download.html">下載</a>
+  <a href="guide.html">使用說明</a>
+  <a href="setup.html">翻譯引擎設定</a>
+  <a href="faq.html">常見問題</a>
+  <a href="sponsor.html">贊助</a>
+</nav>
+
+<h1>下載</h1>
+<p class="lead">目前版本 <b>v1.0.0</b> ｜ Windows 10 / 11（64 位元）</p>
+
+<div class="dl">
+  <a class="big" href="https://github.com/Linch-Lab/poplingo/releases/latest/download/PopLingo-win64.zip">下載 PopLingo-win64.zip</a>
+  <div class="meta">
+    免安裝 ｜ 解壓即用 ｜ 不需安裝 Python<br>
+    直接點擊即開始下載，若瀏覽器沒有反應請見下方<a href="#trouble">下載疑難</a>
+  </div>
+</div>
+
+<h2>檔案說明</h2>
+
+<table>
+  <tr>
+    <th style="width:34%">檔案</th>
+    <th>說明</th>
+  </tr>
+  <tr>
+    <td><b>PopLingo-win64.zip</b></td>
+    <td>主程式。解壓後執行 <code>PopLingo.exe</code> 即可，免安裝。</td>
+  </tr>
+  <tr>
+    <td><b>SHA256SUMS.txt</b></td>
+    <td>檔案雜湊值，可驗證下載檔未被竄改。
+      <a href="https://github.com/Linch-Lab/poplingo/releases/latest">在 Releases 頁面取得</a></td>
+  </tr>
+  <tr>
+    <td><b>原始碼</b></td>
+    <td>Python 單一檔案，可自行檢視或建置：
+      <a href="https://github.com/Linch-Lab/poplingo">GitHub</a></td>
+  </tr>
+  <tr>
+    <td><b>所有版本</b></td>
+    <td><a href="https://github.com/Linch-Lab/poplingo/releases">版本清單</a>（含變更紀錄）</td>
+  </tr>
+</table>
+
+<h2 id="verify">驗證下載檔（選用）</h2>
+
+<p>在命令提示字元執行：</p>
+<pre>certutil -hashfile PopLingo-win64.zip SHA256</pre>
+<p>把輸出與 <code>SHA256SUMS.txt</code> 的內容比對，一致即表示檔案完整未被修改。</p>
+
+<h2>系統需求</h2>
+
+<table>
+  <tr><th style="width:34%">項目</th><th>需求</th></tr>
+  <tr><td>作業系統</td><td>Windows 10 / 11（64 位元）</td></tr>
+  <tr><td>Python</td><td><b>不需要</b>（已打包）</td></tr>
+  <tr><td>網路</td><td>使用雲端 API 時需要；使用 Ollama 本地模型時完全離線</td></tr>
+  <tr><td>記憶體</td><td>使用本地模型建議 8&nbsp;GB 以上</td></tr>
+  <tr><td>翻譯引擎</td><td>需自備 API Key，或使用免費的 Ollama 本地模型</td></tr>
+</table>
+
+<h2>安裝方式</h2>
+
+<ol>
+  <li>解壓 <code>PopLingo-win64.zip</code> 到任意資料夾（例如 <code>C:\Tools\PopLingo</code>）</li>
+  <li>執行 <code>PopLingo.exe</code></li>
+  <li>系統匣（工作列右下角）會出現 PopLingo 圖示</li>
+  <li>右鍵圖示 →「設定」→ 填入翻譯引擎資訊（見 <a href="setup.html">翻譯引擎設定</a>）</li>
+</ol>
+
+<p class="note">
+如果系統匣圖示找不到，Windows 預設會把它收進「隱藏的圖示」區。
+點工作列右側的 <b>^</b> 符號，把 PopLingo 圖示拖到工作列上固定。
+</p>
+
+<h3>可攜模式</h3>
+<p>
+預設設定檔存在 <code>%APPDATA%\PopLingo\config.json</code>，更新程式不會遺失。
+若想把設定帶著走（例如放進 USB 隨身碟），在 <code>PopLingo.exe</code> 旁建立一個空檔案
+<code>portable.flag</code>，設定就會改存在程式資料夾內。
+</p>
+
+<h2 id="trouble">下載疑難</h2>
+
+<h3>點了按鈕卻沒有開始下載？</h3>
+<p>
+按鈕連到 GitHub Releases 的檔案。若你的網路環境阻擋 GitHub，
+可以改用 <a href="https://github.com/Linch-Lab/poplingo/releases">Releases 頁面</a>手動選擇檔案，
+或使用 proxy。
+</p>
+
+<h3>Windows 顯示「不明的發行者」或 SmartScreen 警告？</h3>
+<p>
+因為本專案未購買程式碼簽章憑證。這是<b>所有免費開源軟體的共同情況</b>，並非病毒。
+你可以：點「更多資訊」→「仍要執行」；或<b>自行從原始碼建置</b>，
+以確保執行檔與原始碼一致。也可以用上面的 SHA256 驗證下載檔。
+</p>
+
+<h3>防毒軟體誤判？</h3>
+<p>
+PyInstaller 打包的執行檔偶爾會被誤判。可先驗證 SHA256，或自行建置。
+</p>
+
+<footer class="site">
+  PopLingo — Windows 全域熱鍵即時翻譯工具 ·
+  <a href="https://github.com/Linch-Lab/poplingo/blob/main/LICENSE">MIT License</a><br>
+  <a href="https://github.com/Linch-Lab/poplingo">GitHub</a> ·
+  <a href="https://github.com/Linch-Lab/poplingo/blob/main/CHANGELOG.md">變更紀錄</a> ·
+  <a href="https://github.com/Linch-Lab/poplingo/issues">問題回報</a> ·
+  <a href="sponsor.html">贊助</a><br>
+  本頁為靜態網頁，不使用 JavaScript、不收集任何資料。
+</footer>
+
+</body>
+</html>

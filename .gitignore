@@ -23,6 +23,6 @@ desktop.ini
 
 # 發行檔：只保留版本說明（.md / SHA256SUMS.txt）
 # 二進位檔一律走 GitHub Releases，不進版控
-releases/*/PopLingo-win64/
-releases/*/*.zip
-releases/*/*.exe
+**/releases/*/PopLingo-win64/
+**/releases/*/*.zip
+**/releases/*/*.exe

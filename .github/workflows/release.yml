@@ -11,6 +11,9 @@ permissions:
 jobs:
   build:
     runs-on: windows-latest
+    defaults:
+      run:
+        working-directory: app
     steps:
       - uses: actions/checkout@v4
 
@@ -31,12 +34,7 @@ jobs:
           echo "version=$v" >> $env:GITHUB_OUTPUT
 
       - name: 建置 exe
-        run: |
-          python -m PyInstaller --noconfirm --onedir --windowed ^
-            --name PopLingo ^
-            --version-file version.txt ^
-            --hidden-import pystray._win32 --collect-all pystray ^
-            app.py
+        run: python -m PyInstaller --noconfirm --onedir --windowed --name PopLingo --version-file version.txt --hidden-import pystray._win32 --collect-all pystray app.py
 
       - name: 產生 SHA256
         shell: pwsh
@@ -56,5 +54,5 @@ jobs:
           name: PopLingo v${{ steps.ver.outputs.version }}
           generate_release_notes: true
           files: |
-            dist/PopLingo-${{ steps.ver.outputs.version }}-win64.zip
-            dist/SHA256SUMS.txt
+            app/dist/PopLingo-${{ steps.ver.outputs.version }}-win64.zip
+            app/dist/SHA256SUMS.txt

@@ -41,3 +41,12 @@ ErrorDocument 404 /404.html
 
 # 不要列出目錄內容
 Options -Indexes
+
+# ---- 保護原始碼與文件 ----
+# Hostinger 的 Git 匯入會把整個倉庫複製到網域根目錄，
+# 這裡擋掉不該被瀏覽的程式碼、CI 設定與文件。
+RedirectMatch 404 ^/app/
+RedirectMatch 404 ^/\.github/
+RedirectMatch 404 ^/\.git
+RedirectMatch 404 ^/\.[^/]+$
+RedirectMatch 404 (?i)\.(md|py|bat|vbs|spec|log)$

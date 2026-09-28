@@ -1,6 +1,11 @@
 @echo off
+rem ============================================================
+rem  PopLingo publish helper
+rem  本檔位於 app\ ，實際操作的是「上一層」的倉庫根目錄。
+rem  日常推送其實只要用 git 指令即可，本檔是給不熟悉 git 的人用的。
+rem ============================================================
 setlocal
-cd /d "%~dp0"
+cd /d "%~dp0.."
 
 where git >nul 2>nul
 if %errorlevel% neq 0 (
@@ -18,10 +23,10 @@ if "%~1"=="" (
 
 echo.
 echo === Safety check ===
-if exist "config.json" (
-    findstr /C:"api_key" "config.json" >nul 2>nul
+if exist "app\config.json" (
+    findstr /C:"api_key" "app\config.json" >nul 2>nul
     if %errorlevel%==0 (
-        echo [INFO] config.json contains api_key.
+        echo [INFO] app\config.json contains api_key.
         echo        It is listed in .gitignore and must NOT be pushed.
     )
 )
@@ -45,19 +50,24 @@ if /i not "%OK%"=="y" (
     exit /b 0
 )
 
-git commit -m "PopLingo v1.0.0"
+set /p MSG="Commit message: "
+if "%MSG%"=="" set "MSG=update"
+
+git commit -m "%MSG%"
+if "%REPO%"=="" goto after_push
 git remote remove origin >nul 2>nul
 git remote add origin "%REPO%"
 git push -u origin main
+goto after_push
 
+:after_push
+git push
 echo.
 echo ==============================
-echo   [OK] Pushed to %REPO%
+echo   [OK] Pushed.
 echo ==============================
 echo.
 echo To publish a release (auto-builds the EXE on GitHub):
 echo     git tag v1.0.0
 echo     git push origin v1.0.0
-echo.
-echo Remember to update GITHUB_REPO in app.py and the URL in latest.json.
 pause

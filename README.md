@@ -1,113 +1,177 @@
-# 即時翻譯（Windows 全域攔截式輸入）
+# PopLingo
 
-按下全域熱鍵 **Ctrl+Alt+T** 開啟「翻譯模式」後，一個**極簡、半透明、隨文字量自動變大**的浮動卡片
-會出現在**文字輸入游標旁**，輸入游標自動跳進卡片；直接在卡片打字即時顯示「原文 + 翻譯」，
-再按熱鍵把翻譯結果**回填**進原本的輸入框。
+Windows 全域熱鍵即時翻譯工具。
 
-純 Python 標準庫 + tkinter；系統匣圖示需另裝 pystray / Pillow（可選，未裝則無圖示）。
+在任何輸入框按 <kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>T</kbd>，游標旁會出現一張半透明小卡片；
+用**你自己的語言**打字，立即看到翻譯，按 <kbd>Enter</kbd> 把譯文回填到原本的輸入框。
+不必切換視窗、不必複製貼上。
+
+**下載**：[GitHub Releases](https://github.com/Linch-Lab/poplingo/releases/latest)
+
+> **為什麼不攔截鍵盤？**
+> 大多數同類工具用低階鍵盤掛鉤攔截打字，這會讓**中文／日文／韓文輸入法無法組字**。
+> PopLingo 改為「卡片本身即輸入面」，因此注音、拼音都能正常使用。
 
 ---
 
-## 一、操作方式
+## 專案結構
 
-| 動作 | 熱鍵 |
-|---|---|
-| 開啟 / 關閉翻譯模式 | `Ctrl+Alt+T` |
-| 回填翻譯（不送出） | `Enter` |
-| 送出（卡片清空後再按 Enter） | `Enter` |
-| 回填**原文** | `Ctrl+Shift+Enter` |
-| 換行（多行訊息） | `Shift+Enter` |
-| 取消（清空卡片） | `Esc` |
-
-流程：
-
-1. 點擊任意應用程式的輸入框（聊天框、表單、搜尋欄…）定位文字游標
-2. 按 `Ctrl+Alt+T` → 浮動卡片出現在**游標旁**，輸入游標**自動跳進卡片**
-3. 直接在卡片打字 → 即時顯示翻譯並自動變大
-4. 按 `Enter` → 翻譯結果回填到輸入框（**不送出**）
-5. 卡片清空後再按 `Enter` → 送出（等同在輸入框按 Enter）
-6. 再按 `Ctrl+Alt+T` 關閉翻譯模式（恢復正常打字）
-
-> `Backspace`：卡片有字時刪字；**卡片清空後再按一次 = 關閉翻譯模式**（焦點回到輸入框，繼續刪輸入框的字）。
-
-> 若關閉了自動聚焦（或使用 `manual` 攔截模式），浮動卡片也可直接**點進去**打字，
-> 打完同樣用 `Ctrl+Enter` 回填。拖曳「翻譯文字」區可移動卡片。
-
-### 系統匣圖示
-
-啟動後會在**系統匣（工作列通知區域，輸入法旁）**出現小圖示：
-
-- 翻譯模式**開啟** → 圖示**點亮**（藍色）；**關閉** → **反灰**
-- **右鍵**圖示 → 「設定」「使用說明」「退出」
-
-## 二、環境需求
-
-- Windows 10 / 11
-- Python 3.8 以上（含 tkinter，官方安裝版預設都有）
-- （選用）系統匣圖示：`pystray` + `Pillow`
-
-## 三、安裝步驟
-
-1. 安裝 Python（https://www.python.org/downloads/ ，勾選 **Add Python to PATH**）
-2. （選用，要有工作列圖示才需執行）`pip install pystray pillow`
-3. 到 [DeepSeek 開放平台](https://platform.deepseek.com/) 註冊並建立 **API Key**
-4. 雙擊 `run.bat`（或指令 `python app.py`）
-5. 首次啟動自動跳出「設定」，填入 API 網址 / Key / 模型，儲存
-6. 依「操作方式」開始使用
-
-## 四、設定說明
-
-### 攔截模式（intercept_mode）
-
-| 值 | 行為 |
-|---|---|
-| `all`（預設） | 翻譯模式開啟時攔截**所有**輸入（最可靠，適合 Chrome/Electron 等現代應用） |
-| `auto` | 只攔截「看起來像輸入框」的控制項（Win32 傳統視窗較準） |
-| `manual` | 不攔截，直接點浮動卡片打字，再按熱鍵回填 |
-
-### 換成其他 API（OpenAI / Ollama / 通義千問…）
-
-只要接口是 **OpenAI 相容** 的 `/chat/completions` 即可，改「設定」三個欄位：
-
-| 服務 | API 網址 | 模型 |
-|---|---|---|
-| DeepSeek | `https://api.deepseek.com` | `deepseek-chat` |
-| OpenAI | `https://api.openai.com` | `gpt-4o-mini` |
-| 阿里雲通義 | `https://dashscope.aliyuncs.com/compatible-mode` | `qwen-plus` |
-| Ollama 本地 | `http://localhost:11434` | `qwen2.5:7b` |
-
-### 自訂熱鍵（編輯 `config.json`）
-
-修飾鍵相加：`ALT=1`、`CTRL=2`、`SHIFT=4`、`WIN=8`。
-
-| 欄位 | 意義 | 預設 |
-|---|---|---|
-| `toggle_vk` / `toggle_mods` | 開關翻譯模式 | `84`(T) / `3`(Ctrl+Alt) |
-| `commit_vk` / `commit_mods` | 回填翻譯 | `13`(Enter) / `2`(Ctrl) |
-| `commit_orig_mods` | 回填原文（同 Enter 鍵） | `6`(Ctrl+Shift) |
-| `cancel_vk` | 取消 | `27`(Esc) |
-
-常用虛擬鍵碼：A=65、B=66、D=68、S=83、T=84、Space=32、Enter=13、F8=119。
-
-## 五、常見問題
-
-- **打字沒被攔截**：確認翻譯模式已開啟；若在 Chrome/Electron 中無效，把攔截模式設為 `all`（預設即是）。
-- **中文輸入法（IME）組字異常**：低階攔截對 IME 組字支援有限，可直接**點擊浮動卡片**用 IME 打字，再 `Ctrl+Enter` 回填。
-- **回填沒貼到正確位置**：回填前不要切換視窗；若失敗可手動 `Ctrl+V`（譯文已自動複製到剪貼簿）。
-- **熱鍵衝突**：改 `config.json` 裡的熱鍵（見上表）。
-- **API 401**：Key 錯誤或過期；**402**：餘額不足；**網路錯誤**：檢查防火牆/代理。
-- **關閉主視窗（✕）只是隱藏**，程式仍在背景；要退出請按主視窗「退出」。
-
-## 六、打包成單一 .exe
-
-直接雙擊 `build.bat`（會自動安裝 PyInstaller 並打包），或手動執行：
-
-```bat
-python -m pip install --user pyinstaller pystray pillow
-python -m PyInstaller --onefile --windowed --name Translator --hidden-import pystray._win32 --collect-all pystray app.py
+```
+poplingo/                          ← 倉庫根目錄 = 網站根目錄
+├── index.html / 404.html         官網（純靜態單頁，無 JavaScript）
+├── .htaccess / robots.txt
+├── sitemap.xml / assets/
+├── latest.json                   應用內更新檢查的來源
+├── app/                          Windows 應用程式
+│   ├── app.py                    主程式（單一檔案）
+│   ├── run.bat                   啟動（除錯用，會顯示命令列）
+│   ├── PopLingo.vbs              啟動（無視窗）
+│   ├── build.bat / clean.bat     建置與清理
+│   ├── version.txt               版本資訊資源
+│   └── releases/                 發行版本說明
+├── .github/workflows/            CI：tag → 自動建置並發佈 Release
+└── README.md / CHANGELOG.md / LICENSE / 開發日誌.md / 部署網站.md
 ```
 
-打包後在 `dist\Translator.exe`，可複製到任何電腦直接執行（**免裝 Python**）。
+網站放在根目錄，是為了讓 **Hostinger 的 Git 匯入**能直接把倉庫內容當成網站根目錄；
+應用程式碼則全部收在 `app/`，兩者互不干擾。
 
-> PyInstaller 會把 pystray / Pillow 一起封進 exe，因此 **exe 版不會有「多個 Python 環境」造成的系統匣問題**。
-> 若 exe 裡的系統匣圖示仍不顯示，在打包指令再加上 `--copy-metadata pystray`。
+---
+
+## 快速開始
+
+### 方法一：下載執行檔（推薦，免裝 Python）
+
+1. 到 [Releases](https://github.com/Linch-Lab/poplingo/releases/latest) 下載 `PopLingo-win64.zip`
+2. 解壓縮，執行 `PopLingo.exe`
+3. 系統匣圖示右鍵 →「設定」→ 填入 API Key
+
+### 方法二：從原始碼執行
+
+需先安裝 Python 3.8+（安裝時勾選 **Add Python to PATH**）。
+
+```bat
+cd app
+run.bat          :: 除錯用，會顯示命令列視窗
+PopLingo.vbs     :: 無視窗啟動
+```
+
+系統匣圖示需額外安裝：`pip install pystray pillow`
+
+---
+
+## 操作方式
+
+| 熱鍵 | 功能 |
+|---|---|
+| `Ctrl+Alt+T` | 開啟 / 關閉翻譯模式 |
+| `Ctrl+Alt+C` | 把焦點拉回卡片（焦點跑到別的視窗時用） |
+| `Enter` | 回填翻譯；卡片清空後再按 = 送出 |
+| `Ctrl+Enter` | 只回填、不送出 |
+| `Ctrl+Shift+Enter` | 回填原文 |
+| `Shift+Enter` | 換行 |
+| `Esc` | 取消、清空卡片 |
+
+**流程**：點擊輸入框 → 按 `Ctrl+Alt+T` → 卡片出現在游標旁並取得焦點 → 在卡片打字 → `Enter`
+
+**特色**：
+
+- 點擊其他輸入框時，**卡片與回填目標會自動跟隨**
+- 卡片可拖曳、隨內容自動縮放、半透明
+- 翻譯成英文等以空格分詞的語言時，連續回填會自動補空格
+- 支援多螢幕（含負座標與混合 DPI）
+
+---
+
+## 設定
+
+系統匣圖示右鍵 →「設定」，分為兩個分頁。
+
+### 翻譯
+
+| 欄位 | 說明 |
+|---|---|
+| 翻譯服務 | 下拉選單，共 14 家 OpenAI 相容服務 + 自訂 |
+| API 網址 | 選擇服務時自動帶入 |
+| API Key | 你的金鑰 |
+| 模型 | 下拉選單（可自行輸入） |
+| 來源語言 | 預設「自動偵測」 |
+| 目標語言 | 預設「英文」 |
+| 第二外語 | 原文已是目標語言時，改翻成此語言（選「（無）」＝停用） |
+| 翻譯風格 | 學術（預設）／商務／閒聊 |
+| 延遲（毫秒） | 停止輸入後多久開始翻譯 |
+
+內建服務：DeepSeek、OpenAI、阿里雲通義千問、智譜 GLM、Kimi（Moonshot）、
+矽基流動 SiliconFlow、騰訊混元、火山方舟（豆包）、MiniMax、Groq、
+Mistral、OpenRouter、Ollama（本地）、LM Studio（本地）。
+
+### 卡片外觀
+
+輸入文字與翻譯文字的**字級**（微調器）與**顏色**（點色塊開調色盤），
+上方有**即時預覽**，調整立刻反映。
+
+### 設定檔位置
+
+```
+%APPDATA%\PopLingo\config.json
+```
+
+更新或重裝都不會遺失。若要改為可攜模式，在 `PopLingo.exe` 旁建立一個空檔案
+`portable.flag`，設定就會存在程式資料夾內。
+
+### 完全本地部署（Ollama）
+
+免費、離線、資料不出你的電腦。
+
+| 欄位 | 值 |
+|---|---|
+| API 網址 | `http://localhost:11434/v1` |
+| API Key | `ollama`（本地不驗證，隨便填） |
+| 模型 | `qwen2.5:7b` |
+
+---
+
+## 開發
+
+```bat
+cd app
+build.bat        :: 建置 exe，輸出到 app\releases\v<版本>\
+clean.bat        :: 清除中間產物（不會動 releases\）
+```
+
+**版本號的唯一來源**是 `app/app.py` 的 `APP_VERSION`，
+`build.bat` 與 GitHub Actions 都會自動讀取。
+
+### 發佈流程
+
+```bat
+git tag v1.0.0
+git push origin v1.0.0
+```
+
+推送標籤後，`.github/workflows/release.yml` 會在 GitHub 上自動建置
+`PopLingo-win64.zip`、產生 `SHA256SUMS.txt` 並建立 Release。
+
+### 驗證下載檔
+
+```bat
+certutil -hashfile PopLingo-win64.zip SHA256
+```
+
+與 Release 中的 `SHA256SUMS.txt` 比對即可。
+
+---
+
+## 其他文件
+
+| 文件 | 內容 |
+|---|---|
+| [開發日誌](開發日誌.md) | 完整技術記錄、問題根因與決策歷程 |
+| [變更紀錄](CHANGELOG.md) | 各版本的新增 / 修正 / 已知限制 |
+| [網站部署指南](部署網站.md) | Hostinger 部署與 GitHub 自動同步 |
+
+---
+
+## 授權
+
+[MIT License](LICENSE)

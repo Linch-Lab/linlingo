@@ -50,7 +50,7 @@ except Exception:
 
 # ---------- 應用資訊（發版只需改這裡） ----------
 APP_NAME = "PopLingo"
-APP_VERSION = "1.0.0"
+APP_VERSION = "1.0.1"
 CONFIG_VERSION = 1
 
 # 建立 GitHub 專案後，只需改這幾行
@@ -59,7 +59,14 @@ UPDATE_URL = "https://raw.githubusercontent.com/{}/main/latest.json".format(GITH
 RELEASES_URL = "https://github.com/{}/releases/latest".format(GITHUB_REPO)
 
 WEBSITE_URL = "https://poplingo.billlinch.com/"   # 官網
-SPONSOR_URL = "https://ko-fi.com/bill_linch"      # 贊助頁
+SPONSOR_URL = "https://ko-fi.com/bill_linch"      # 贊助頁（Ko-fi，一鍵可捐）
+
+# 官網各頁（App 內的說明連結會用到）
+GUIDE_URL = WEBSITE_URL + "guide.html"            # 使用說明
+SETUP_URL = WEBSITE_URL + "setup.html"            # 翻譯引擎設定教學
+FAQ_URL = WEBSITE_URL + "faq.html"                # 常見問題
+DOWNLOAD_URL = WEBSITE_URL + "download.html"      # 下載頁
+ISSUES_URL = "https://github.com/{}/issues".format(GITHUB_REPO)
 
 # 翻譯服務預設值：(顯示名稱, API 網址, [常見模型], 申請 / 說明網址)
 # 程式送出請求時會接上 "/chat/completions"，所以這裡只填到 base 為止。
@@ -135,6 +142,7 @@ Esc                取消、清空卡片
 ──────────
 • 關閉本視窗只是隱藏，程式仍在背景執行
 • 設定檔：%APPDATA%\\PopLingo\\config.json
+• 線上完整教學與常見問題：poplingo.billlinch.com
 """
 
 APP_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -1136,6 +1144,18 @@ class TranslatorApp:
                    command=self.open_website).pack(side="left")
         ttk.Button(bar, text="退出", width=7, command=self.quit_app).pack(side="right")
 
+        # 官網文件連結（可直接點擊）
+        links = ttk.Frame(root, padding=(12, 4))
+        links.pack(fill="x")
+        ttk.Label(links, text="線上官網：", foreground="#888888").pack(side="left")
+        for _text, _url in (("使用說明", GUIDE_URL),
+                            ("翻譯引擎教學", SETUP_URL),
+                            ("常見問題", FAQ_URL),
+                            ("問題回報", ISSUES_URL)):
+            lb = ttk.Label(links, text=_text, foreground="#0b57d0", cursor="hand2")
+            lb.pack(side="left", padx=(0, 10))
+            lb.bind("<Button-1>", lambda e, u=_url: webbrowser.open(u))
+
         tip = tk.Text(root, wrap="word", bg="#f7f7f7", relief="flat",
                       font=("Microsoft YaHei UI", 10), padx=12, pady=10)
         tip.pack(fill="both", expand=True, padx=12, pady=(8, 4))
@@ -1525,6 +1545,12 @@ class TranslatorApp:
         ttk.Label(tf, foreground="#888888", wraplength=390, justify="left",
                   text="模型可直接輸入；清單為該服務的常見選項。"
                   ).grid(row=r, column=1, columnspan=2, sticky="w", padx=6, pady=(0, 4))
+        r += 1
+
+        doc_link = ttk.Label(tf, text="不知道怎麼填？看圖文教學 →",
+                             foreground="#0b57d0", cursor="hand2")
+        doc_link.grid(row=r, column=1, columnspan=2, sticky="w", padx=6, pady=(0, 6))
+        doc_link.bind("<Button-1>", lambda e: webbrowser.open(SETUP_URL))
         r += 1
 
         ttk.Separator(tf, orient="horizontal").grid(

@@ -49,16 +49,16 @@ except Exception:
     user32 = kernel32 = imm32 = None
 
 # ---------- 應用資訊（發版只需改這裡） ----------
-APP_NAME = "PopLingo"
-APP_VERSION = "1.0.1"
+APP_NAME = "LinLingo"
+APP_VERSION = "1.0.2"
 CONFIG_VERSION = 1
 
 # 建立 GitHub 專案後，只需改這幾行
-GITHUB_REPO = "Linch-Lab/poplingo"
+GITHUB_REPO = "Linch-Lab/linlingo"
 UPDATE_URL = "https://raw.githubusercontent.com/{}/main/latest.json".format(GITHUB_REPO)
 RELEASES_URL = "https://github.com/{}/releases/latest".format(GITHUB_REPO)
 
-WEBSITE_URL = "https://poplingo.billlinch.com/"   # 官網
+WEBSITE_URL = "https://linlingo.billlinch.com/"   # 官網
 SPONSOR_URL = "https://ko-fi.com/bill_linch"      # 贊助頁（Ko-fi，一鍵可捐）
 
 # 官網各頁（App 內的說明連結會用到）
@@ -141,8 +141,8 @@ Esc                取消、清空卡片
 其他
 ──────────
 • 關閉本視窗只是隱藏，程式仍在背景執行
-• 設定檔：%APPDATA%\\PopLingo\\config.json
-• 線上完整教學與常見問題：poplingo.billlinch.com
+• 設定檔：%APPDATA%\\LinLingo\\config.json
+• 線上完整教學與常見問題：linlingo.billlinch.com
 """
 
 APP_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -153,8 +153,10 @@ def config_path():
     """設定檔位置。
 
     1. 可攜模式：exe 旁有 portable.flag → 用 exe 旁的 config.json
-    2. 預設：%APPDATA%\\PopLingo\\config.json（更新 / 重裝不會遺失）
+    2. 預設：%APPDATA%\\LinLingo\\config.json（更新 / 重裝不會遺失）
     3. 若 %APPDATA% 尚無設定但專案旁有舊 config.json → 自動搬移過去
+    4. 從舊名 PopLingo 升級上來時，搬移 %APPDATA%\\PopLingo\\config.json
+       （v1.0.2 更名，讓既有使用者不會遺失 API Key 與設定）
     """
     global _CONFIG_PATH
     if _CONFIG_PATH:
@@ -173,12 +175,17 @@ def config_path():
         return _CONFIG_PATH
 
     new_path = os.path.join(d, "config.json")
-    legacy = os.path.join(APP_DIR, "config.json")
-    if not os.path.exists(new_path) and os.path.exists(legacy):
-        try:
-            shutil.copy2(legacy, new_path)  # 舊設定自動搬移
-        except Exception:
-            pass
+    if not os.path.exists(new_path):
+        # 舊名（PopLingo）的設定優先搬過來
+        for legacy in (os.path.join(base, "PopLingo", "config.json"),
+                       os.path.join(APP_DIR, "config.json")):
+            if os.path.exists(legacy):
+                try:
+                    shutil.copy2(legacy, new_path)
+                    log("已從舊設定搬移：{}".format(legacy))
+                except Exception:
+                    pass
+                break
     _CONFIG_PATH = new_path
     return _CONFIG_PATH
 
@@ -187,7 +194,7 @@ def log(msg):
     """寫入 log 檔（pythonw 模式下沒有主控台，只能寫檔）。"""
     line = time.strftime("[%Y-%m-%d %H:%M:%S] ") + str(msg)
     try:
-        with open(os.path.join(os.path.dirname(config_path()), "poplingo.log"),
+        with open(os.path.join(os.path.dirname(config_path()), "linlingo.log"),
                   "a", encoding="utf-8") as f:
             f.write(line + "\n")
     except Exception:

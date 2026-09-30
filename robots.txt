@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://poplingo.billlinch.com/sitemap.xml
+Sitemap: https://linlingo.billlinch.com/sitemap.xml

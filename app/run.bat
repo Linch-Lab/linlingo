@@ -1,7 +1,7 @@
 @echo off
 rem ============================================================
-rem  PopLingo launcher - debug version (shows a console window)
-rem  For everyday use double-click PopLingo.vbs instead: it
+rem  LinLingo launcher - debug version (shows a console window)
+rem  For everyday use double-click LinLingo.vbs instead: it
 rem  starts with no window at all.
 rem
 rem  IMPORTANT: keep this file pure ASCII.
@@ -12,7 +12,7 @@ rem ============================================================
 setlocal
 cd /d "%~dp0"
 
-set "LOGDIR=%APPDATA%\PopLingo"
+set "LOGDIR=%APPDATA%\LinLingo"
 if not exist "%LOGDIR%" mkdir "%LOGDIR%" >nul 2>nul
 set "LOG=%LOGDIR%\launcher.log"
 
@@ -38,7 +38,7 @@ where python >nul 2>nul
 if %errorlevel%==0 (
     echo [INFO] pythonw.exe not found; running with python.exe.
     echo        A console window will stay open in this mode.
-    echo        For a windowless launch use PopLingo.vbs instead.
+    echo        For a windowless launch use LinLingo.vbs instead.
     echo.
     python app.py
     goto :end

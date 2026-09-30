@@ -1,4 +1,4 @@
-# PopLingo v1.0.0
+# LinLingo v1.0.0
 
 首個公開發行版本。
 
@@ -6,8 +6,8 @@
 
 | 檔案 | 說明 |
 |---|---|
-| `PopLingo-win64.zip` | 免安裝版，解壓後執行 `PopLingo.exe` |
-| `SHA256SUMS.txt` | 檔案雜湊值，可用 `certutil -hashfile PopLingo-win64.zip SHA256` 驗證 |
+| `LinLingo-win64.zip` | 免安裝版，解壓後執行 `LinLingo.exe` |
+| `SHA256SUMS.txt` | 檔案雜湊值，可用 `certutil -hashfile LinLingo-win64.zip SHA256` 驗證 |
 
 > 本資料夾的內容由 `build.bat` 產生；若尚未建置，請先執行 `build.bat`。
 

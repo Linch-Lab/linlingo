@@ -23,6 +23,8 @@ desktop.ini
 
 # 發行檔：只保留版本說明（.md）
 # 二進位檔一律走 GitHub Releases，不進版控
+# 舊名稱 PopLingo-win64 也一併忽略：改名前建置的解壓資料夾還留在磁碟上
+**/releases/*/LinLingo-win64/
 **/releases/*/PopLingo-win64/
 **/releases/*/*.zip
 **/releases/*/*.exe

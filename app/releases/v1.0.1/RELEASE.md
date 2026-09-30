@@ -1,4 +1,4 @@
-# PopLingo v1.0.1
+# LinLingo v1.0.1
 
 修正 PowerPoint 相容性問題，並補上應用程式內的官網連結。
 
@@ -40,10 +40,10 @@
 
 | 檔案 | 說明 |
 |---|---|
-| `PopLingo-win64.zip` | 免安裝版，解壓後執行 `PopLingo.exe` |
+| `LinLingo-win64.zip` | 免安裝版，解壓後執行 `LinLingo.exe` |
 | `SHA256SUMS.txt` | 檔案雜湊值 |
 
-下載：https://poplingo.billlinch.com/download.html
+下載：https://linlingo.billlinch.com/download.html
 
 ## 授權
 

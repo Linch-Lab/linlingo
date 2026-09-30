@@ -1,6 +1,6 @@
 @echo off
 rem ============================================================
-rem  PopLingo environment diagnostic
+rem  LinLingo environment diagnostic
 rem  Run this if the program will not start, then report the output.
 rem
 rem  IMPORTANT: keep this file pure ASCII.
@@ -11,7 +11,7 @@ rem ============================================================
 cd /d "%~dp0"
 
 echo ============================================================
-echo   PopLingo environment check
+echo   LinLingo environment check
 echo ============================================================
 echo.
 
@@ -29,29 +29,29 @@ echo.
 
 echo [2] Local files
 echo ----------------------------------------
-for %%F in (app.py run.bat PopLingo.vbs version.txt) do (
+for %%F in (app.py run.bat LinLingo.vbs version.txt) do (
   if exist "%%F" (echo    OK      %%F) else (echo    MISSING %%F)
 )
 echo.
 
 echo [3] Config / logs
 echo ----------------------------------------
-if exist "%APPDATA%\PopLingo\config.json" (
-  echo    config : %APPDATA%\PopLingo\config.json
+if exist "%APPDATA%\LinLingo\config.json" (
+  echo    config : %APPDATA%\LinLingo\config.json
 ) else (
   echo    config : not created yet
 )
-if exist "%APPDATA%\PopLingo\launcher.log" (
+if exist "%APPDATA%\LinLingo\launcher.log" (
   echo    launcher.log contents:
-  type "%APPDATA%\PopLingo\launcher.log"
+  type "%APPDATA%\LinLingo\launcher.log"
 ) else (
   echo    launcher.log : none
 )
-if exist "%APPDATA%\PopLingo\poplingo.log" (
-  echo    poplingo.log tail:
-  powershell -NoProfile -Command "Get-Content -Encoding UTF8 '%APPDATA%\PopLingo\poplingo.log' -Tail 20"
+if exist "%APPDATA%\LinLingo\linlingo.log" (
+  echo    linlingo.log tail:
+  powershell -NoProfile -Command "Get-Content -Encoding UTF8 '%APPDATA%\LinLingo\linlingo.log' -Tail 20"
 ) else (
-  echo    poplingo.log : none
+  echo    linlingo.log : none
 )
 echo.
 

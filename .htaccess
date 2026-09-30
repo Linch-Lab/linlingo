@@ -1,4 +1,4 @@
-# PopLingo 靜態網站 — Apache 設定（Hostinger / cPanel 適用）
+# LinLingo 靜態網站 — Apache 設定（Hostinger / cPanel 適用）
 
 # 預設首頁
 DirectoryIndex index.html

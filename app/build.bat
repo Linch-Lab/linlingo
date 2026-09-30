@@ -1,8 +1,8 @@
 @echo off
 rem ============================================================
-rem  PopLingo build script
-rem  Output: dist\PopLingo\PopLingo.exe  (test copy)
-rem          releases\v<version>\PopLingo-win64.zip + SHA256SUMS.txt
+rem  LinLingo build script
+rem  Output: dist\LinLingo\LinLingo.exe  (test copy)
+rem          releases\v<version>\LinLingo-win64.zip + SHA256SUMS.txt
 rem
 rem  IMPORTANT: keep this file pure ASCII.
 rem  cmd.exe reads .bat files using the system ANSI codepage (CP950 here);
@@ -27,7 +27,7 @@ set VER=%VER:"=%
 if "%VER%"=="" set "VER=0.0.0"
 
 echo ==========================================
-echo   PopLingo build   version %VER%
+echo   LinLingo build   version %VER%
 echo ==========================================
 echo.
 
@@ -49,9 +49,9 @@ set "EXCLUDES=--exclude-module numpy --exclude-module scipy --exclude-module pan
 
 echo.
 echo [2/5] Building EXE (onedir, faster startup than onefile)...
-python -m PyInstaller --noconfirm --onedir --windowed --name PopLingo --version-file version.txt --hidden-import pystray._win32 --collect-all pystray %EXCLUDES% %ICONARG% app.py
+python -m PyInstaller --noconfirm --onedir --windowed --name LinLingo --version-file version.txt --hidden-import pystray._win32 --collect-all pystray %EXCLUDES% %ICONARG% app.py
 
-if not exist "dist\PopLingo\PopLingo.exe" (
+if not exist "dist\LinLingo\LinLingo.exe" (
     echo.
     echo [ERROR] Build failed. Check the PyInstaller output above.
     pause
@@ -66,15 +66,15 @@ if not exist "%OUTDIR%" mkdir "%OUTDIR%" >nul 2>nul
 
 echo.
 echo [4/5] Packing and hashing...
-powershell -NoProfile -Command "Compress-Archive -Path 'dist\PopLingo\*' -DestinationPath '%OUTDIR%\PopLingo-win64.zip' -Force"
-powershell -NoProfile -Command "Get-FileHash '%OUTDIR%\PopLingo-win64.zip' -Algorithm SHA256 | ForEach-Object { $_.Hash + '  PopLingo-win64.zip' } | Out-File -Encoding utf8 '%OUTDIR%\SHA256SUMS.txt'"
+powershell -NoProfile -Command "Compress-Archive -Path 'dist\LinLingo\*' -DestinationPath '%OUTDIR%\LinLingo-win64.zip' -Force"
+powershell -NoProfile -Command "Get-FileHash '%OUTDIR%\LinLingo-win64.zip' -Algorithm SHA256 | ForEach-Object { $_.Hash + '  LinLingo-win64.zip' } | Out-File -Encoding utf8 '%OUTDIR%\SHA256SUMS.txt'"
 
 echo.
 echo [5/5] Done.
 type "%OUTDIR%\SHA256SUMS.txt"
 echo.
-echo   Test copy : dist\PopLingo\PopLingo.exe
-echo   Release   : %OUTDIR%\PopLingo-win64.zip
+echo   Test copy : dist\LinLingo\LinLingo.exe
+echo   Release   : %OUTDIR%\LinLingo-win64.zip
 echo.
 echo Next: git tag v%VER% ^&^& git push origin v%VER%
 pause

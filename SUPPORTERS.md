@@ -40,7 +40,7 @@
 |---|---|
 | API 測試費用 | 開發與驗證時呼叫翻譯 API 的實際支出 |
 | 開發時間 | 讓我能撥出週末維護、修問題、加功能 |
-| 網域與主機 | 官網 `poplingo.billlinch.com` 的費用 |
+| 網域與主機 | 官網 `linlingo.billlinch.com` 的費用 |
 
 ## 我不會做的事
 
@@ -54,4 +54,4 @@
 | 方式 | 連結 |
 |---|---|
 | Ko-fi | https://ko-fi.com/bill_linch |
-| TWQR 台灣Pay | 掃碼：[官網贊助區](https://poplingo.billlinch.com/#sponsor) |
+| TWQR 台灣Pay | 掃碼：[官網贊助區](https://linlingo.billlinch.com/#sponsor) |

@@ -1,7 +1,7 @@
 VSVersionInfo(
   ffi=FixedFileInfo(
-    filevers=(1, 0, 1, 0),
-    prodvers=(1, 0, 1, 0),
+    filevers=(1, 0, 2, 0),
+    prodvers=(1, 0, 2, 0),
     mask=0x3f,
     flags=0x0,
     OS=0x40004,
@@ -12,14 +12,14 @@ VSVersionInfo(
   kids=[
     StringFileInfo([
       StringTable('040404B0', [
-        StringStruct('CompanyName', 'PopLingo'),
-        StringStruct('FileDescription', 'PopLingo - Instant Translate for Windows'),
-        StringStruct('FileVersion', '1.0.1'),
-        StringStruct('InternalName', 'PopLingo'),
+        StringStruct('CompanyName', 'LinLingo'),
+        StringStruct('FileDescription', 'LinLingo - Instant Translate for Windows'),
+        StringStruct('FileVersion', '1.0.2'),
+        StringStruct('InternalName', 'LinLingo'),
         StringStruct('LegalCopyright', 'MIT License'),
-        StringStruct('OriginalFilename', 'PopLingo.exe'),
-        StringStruct('ProductName', 'PopLingo'),
-        StringStruct('ProductVersion', '1.0.1')
+        StringStruct('OriginalFilename', 'LinLingo.exe'),
+        StringStruct('ProductName', 'LinLingo'),
+        StringStruct('ProductVersion', '1.0.2')
       ])
     ]),
     VarFileInfo([VarStruct('Translation', [0x0404, 1200])])

@@ -6,7 +6,7 @@
 app/releases/
 ├── README.md              本文件
 ├── v1.0.0/
-│   ├── PopLingo-win64.zip 免安裝，解壓即用
+│   ├── LinLingo-win64.zip 免安裝，解壓即用
 │   ├── SHA256SUMS.txt     檔案雜湊，可驗證下載完整性
 │   └── RELEASE.md         版本說明與更新重點
 └── v1.1.0/                （未來版本）
@@ -17,8 +17,8 @@ app/releases/
 於 `app\` 資料夾執行 `build.bat`，會自動：
 
 1. 從 `app.py` 讀取 `APP_VERSION`（**版本號的唯一來源**）
-2. 用 PyInstaller 建置 `app\dist\PopLingo\PopLingo.exe`
-3. 打包成 `app\releases\v<版本>\PopLingo-win64.zip`
+2. 用 PyInstaller 建置 `app\dist\LinLingo\LinLingo.exe`
+3. 打包成 `app\releases\v<版本>\LinLingo-win64.zip`
 4. 產生同資料夾的 `SHA256SUMS.txt`
 
 ## 中間產物 vs. 正式產物
@@ -37,7 +37,7 @@ app/releases/
 **二進位檔不進 git**，一律走 GitHub Releases。因此 `.gitignore` 排除了：
 
 ```
-**/releases/*/PopLingo-win64/
+**/releases/*/LinLingo-win64/
 **/releases/*/*.zip
 **/releases/*/*.exe
 ```
@@ -49,8 +49,8 @@ app/releases/
 | `app/releases/README.md` | ✅ |
 | `app/releases/v1.0.0/RELEASE.md` | ✅ |
 | `app/releases/v1.0.0/SHA256SUMS.txt` | ✅ |
-| `app/releases/v1.0.0/PopLingo-win64.zip` | ❌（走 Releases） |
-| `app/releases/v1.0.0/PopLingo-win64/` | ❌（解壓後的內容） |
+| `app/releases/v1.0.0/LinLingo-win64.zip` | ❌（走 Releases） |
+| `app/releases/v1.0.0/LinLingo-win64/` | ❌（解壓後的內容） |
 
 ## 發佈流程
 

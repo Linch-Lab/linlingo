@@ -3,18 +3,18 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>下載 - PopLingo</title>
-<meta name="description" content="下載 PopLingo v1.0.1：Windows 64 位元免安裝 ZIP，含 SHA256 驗證方式與系統需求。">
-<link rel="canonical" href="https://poplingo.billlinch.com/download.html">
-<link rel="alternate" hreflang="en" href="https://poplingo.billlinch.com/en/download.html">
+<title>下載 - LinLingo</title>
+<meta name="description" content="下載 LinLingo v1.0.2：Windows 64 位元免安裝 ZIP，含 SHA256 驗證方式與系統需求。">
+<link rel="canonical" href="https://linlingo.billlinch.com/download.html">
+<link rel="alternate" hreflang="en" href="https://linlingo.billlinch.com/en/download.html">
 <link rel="icon" href="assets/app.ico">
 <link rel="stylesheet" href="assets/style.css">
 </head>
 <body>
 
 <header class="site">
-  <p class="brand"><a href="index.html">PopLingo</a></p>
-  <span class="ver">v1.0.1</span>
+  <p class="brand"><a href="index.html">LinLingo</a></p>
+  <span class="ver">v1.0.2</span>
   <span class="spacer"></span>
   <span class="lang"><a href="en/download.html">English</a></span>
 </header>
@@ -29,10 +29,10 @@
 </nav>
 
 <h1>下載</h1>
-<p class="lead">目前版本 <b>v1.0.1</b> ｜ Windows 10 / 11（64 位元）</p>
+<p class="lead">目前版本 <b>v1.0.2</b> ｜ Windows 10 / 11（64 位元）</p>
 
 <div class="dl">
-  <a class="big" href="https://github.com/Linch-Lab/poplingo/releases/latest/download/PopLingo-win64.zip">下載 PopLingo-win64.zip</a>
+  <a class="big" href="https://github.com/Linch-Lab/linlingo/releases/latest/download/LinLingo-win64.zip">下載 LinLingo-win64.zip</a>
   <div class="meta">
     免安裝 ｜ 解壓即用 ｜ 不需安裝 Python<br>
     直接點擊即開始下載，若瀏覽器沒有反應請見下方<a href="#trouble">下載疑難</a>
@@ -47,29 +47,29 @@
     <th>說明</th>
   </tr>
   <tr>
-    <td><b>PopLingo-win64.zip</b></td>
-    <td>主程式。解壓後執行 <code>PopLingo.exe</code> 即可，免安裝。</td>
+    <td><b>LinLingo-win64.zip</b></td>
+    <td>主程式。解壓後執行 <code>LinLingo.exe</code> 即可，免安裝。</td>
   </tr>
   <tr>
     <td><b>SHA256SUMS.txt</b></td>
     <td>檔案雜湊值，可驗證下載檔未被竄改。
-      <a href="https://github.com/Linch-Lab/poplingo/releases/latest">在 Releases 頁面取得</a></td>
+      <a href="https://github.com/Linch-Lab/linlingo/releases/latest">在 Releases 頁面取得</a></td>
   </tr>
   <tr>
     <td><b>原始碼</b></td>
     <td>Python 單一檔案，可自行檢視或建置：
-      <a href="https://github.com/Linch-Lab/poplingo">GitHub</a></td>
+      <a href="https://github.com/Linch-Lab/linlingo">GitHub</a></td>
   </tr>
   <tr>
     <td><b>所有版本</b></td>
-    <td><a href="https://github.com/Linch-Lab/poplingo/releases">版本清單</a>（含變更紀錄）</td>
+    <td><a href="https://github.com/Linch-Lab/linlingo/releases">版本清單</a>（含變更紀錄）</td>
   </tr>
 </table>
 
 <h2 id="verify">驗證下載檔（選用）</h2>
 
 <p>在命令提示字元執行：</p>
-<pre>certutil -hashfile PopLingo-win64.zip SHA256</pre>
+<pre>certutil -hashfile LinLingo-win64.zip SHA256</pre>
 <p>把輸出與 <code>SHA256SUMS.txt</code> 的內容比對，一致即表示檔案完整未被修改。</p>
 
 <h2>系統需求</h2>
@@ -86,21 +86,21 @@
 <h2>安裝方式</h2>
 
 <ol>
-  <li>解壓 <code>PopLingo-win64.zip</code> 到任意資料夾（例如 <code>C:\Tools\PopLingo</code>）</li>
-  <li>執行 <code>PopLingo.exe</code></li>
-  <li>系統匣（工作列右下角）會出現 PopLingo 圖示</li>
+  <li>解壓 <code>LinLingo-win64.zip</code> 到任意資料夾（例如 <code>C:\Tools\LinLingo</code>）</li>
+  <li>執行 <code>LinLingo.exe</code></li>
+  <li>系統匣（工作列右下角）會出現 LinLingo 圖示</li>
   <li>右鍵圖示 →「設定」→ 填入翻譯引擎資訊（見 <a href="setup.html">翻譯引擎設定</a>）</li>
 </ol>
 
 <p class="note">
 如果系統匣圖示找不到，Windows 預設會把它收進「隱藏的圖示」區。
-點工作列右側的 <b>^</b> 符號，把 PopLingo 圖示拖到工作列上固定。
+點工作列右側的 <b>^</b> 符號，把 LinLingo 圖示拖到工作列上固定。
 </p>
 
 <h3>可攜模式</h3>
 <p>
-預設設定檔存在 <code>%APPDATA%\PopLingo\config.json</code>，更新程式不會遺失。
-若想把設定帶著走（例如放進 USB 隨身碟），在 <code>PopLingo.exe</code> 旁建立一個空檔案
+預設設定檔存在 <code>%APPDATA%\LinLingo\config.json</code>，更新程式不會遺失。
+若想把設定帶著走（例如放進 USB 隨身碟），在 <code>LinLingo.exe</code> 旁建立一個空檔案
 <code>portable.flag</code>，設定就會改存在程式資料夾內。
 </p>
 
@@ -109,7 +109,7 @@
 <h3>點了按鈕卻沒有開始下載？</h3>
 <p>
 按鈕連到 GitHub Releases 的檔案。若你的網路環境阻擋 GitHub，
-可以改用 <a href="https://github.com/Linch-Lab/poplingo/releases">Releases 頁面</a>手動選擇檔案，
+可以改用 <a href="https://github.com/Linch-Lab/linlingo/releases">Releases 頁面</a>手動選擇檔案，
 或使用 proxy。
 </p>
 
@@ -126,11 +126,11 @@ PyInstaller 打包的執行檔偶爾會被誤判。可先驗證 SHA256，或自�
 </p>
 
 <footer class="site">
-  PopLingo — Windows 全域熱鍵即時翻譯工具 ·
-  <a href="https://github.com/Linch-Lab/poplingo/blob/main/LICENSE">MIT License</a><br>
-  <a href="https://github.com/Linch-Lab/poplingo">GitHub</a> ·
-  <a href="https://github.com/Linch-Lab/poplingo/blob/main/CHANGELOG.md">變更紀錄</a> ·
-  <a href="https://github.com/Linch-Lab/poplingo/issues">問題回報</a> ·
+  LinLingo — Windows 全域熱鍵即時翻譯工具 ·
+  <a href="https://github.com/Linch-Lab/linlingo/blob/main/LICENSE">MIT License</a><br>
+  <a href="https://github.com/Linch-Lab/linlingo">GitHub</a> ·
+  <a href="https://github.com/Linch-Lab/linlingo/blob/main/CHANGELOG.md">變更紀錄</a> ·
+  <a href="https://github.com/Linch-Lab/linlingo/issues">問題回報</a> ·
   <a href="sponsor.html">贊助</a><br>
   本頁為靜態網頁，不使用 JavaScript、不收集任何資料。
 </footer>

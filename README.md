@@ -1,4 +1,4 @@
-# PopLingo
+# LinLingo
 
 Windows 全域熱鍵即時翻譯工具。
 
@@ -6,18 +6,18 @@ Windows 全域熱鍵即時翻譯工具。
 用**你自己的語言**打字，立即看到翻譯，按 <kbd>Enter</kbd> 把譯文回填到原本的輸入框。
 不必切換視窗、不必複製貼上。
 
-**下載**：[GitHub Releases](https://github.com/Linch-Lab/poplingo/releases/latest)
+**下載**：[GitHub Releases](https://github.com/Linch-Lab/linlingo/releases/latest)
 
 > **為什麼不攔截鍵盤？**
 > 大多數同類工具用低階鍵盤掛鉤攔截打字，這會讓**中文／日文／韓文輸入法無法組字**。
-> PopLingo 改為「卡片本身即輸入面」，因此注音、拼音都能正常使用。
+> LinLingo 改為「卡片本身即輸入面」，因此注音、拼音都能正常使用。
 
 ---
 
 ## 專案結構
 
 ```
-poplingo/                          ← 倉庫根目錄 = 網站根目錄
+linlingo/                          ← 倉庫根目錄 = 網站根目錄
 ├── index.html / 404.html         官網（純靜態單頁，無 JavaScript）
 ├── .htaccess / robots.txt
 ├── sitemap.xml / assets/
@@ -25,7 +25,7 @@ poplingo/                          ← 倉庫根目錄 = 網站根目錄
 ├── app/                          Windows 應用程式
 │   ├── app.py                    主程式（單一檔案）
 │   ├── run.bat                   啟動（除錯用，會顯示命令列）
-│   ├── PopLingo.vbs              啟動（無視窗）
+│   ├── LinLingo.vbs              啟動（無視窗）
 │   ├── build.bat / clean.bat     建置與清理
 │   ├── version.txt               版本資訊資源
 │   └── releases/                 發行版本說明
@@ -42,8 +42,8 @@ poplingo/                          ← 倉庫根目錄 = 網站根目錄
 
 ### 方法一：下載執行檔（推薦，免裝 Python）
 
-1. 到 [Releases](https://github.com/Linch-Lab/poplingo/releases/latest) 下載 `PopLingo-win64.zip`
-2. 解壓縮，執行 `PopLingo.exe`
+1. 到 [Releases](https://github.com/Linch-Lab/linlingo/releases/latest) 下載 `LinLingo-win64.zip`
+2. 解壓縮，執行 `LinLingo.exe`
 3. 系統匣圖示右鍵 →「設定」→ 填入 API Key
 
 ### 方法二：從原始碼執行
@@ -53,7 +53,7 @@ poplingo/                          ← 倉庫根目錄 = 網站根目錄
 ```bat
 cd app
 run.bat          :: 除錯用，會顯示命令列視窗
-PopLingo.vbs     :: 無視窗啟動
+LinLingo.vbs     :: 無視窗啟動
 ```
 
 系統匣圖示需額外安裝：`pip install pystray pillow`
@@ -113,10 +113,10 @@ Mistral、OpenRouter、Ollama（本地）、LM Studio（本地）。
 ### 設定檔位置
 
 ```
-%APPDATA%\PopLingo\config.json
+%APPDATA%\LinLingo\config.json
 ```
 
-更新或重裝都不會遺失。若要改為可攜模式，在 `PopLingo.exe` 旁建立一個空檔案
+更新或重裝都不會遺失。若要改為可攜模式，在 `LinLingo.exe` 旁建立一個空檔案
 `portable.flag`，設定就會存在程式資料夾內。
 
 ### 完全本地部署（Ollama）
@@ -150,12 +150,12 @@ git push origin v1.0.0
 ```
 
 推送標籤後，`.github/workflows/release.yml` 會在 GitHub 上自動建置
-`PopLingo-win64.zip`、產生 `SHA256SUMS.txt` 並建立 Release。
+`LinLingo-win64.zip`、產生 `SHA256SUMS.txt` 並建立 Release。
 
 ### 驗證下載檔
 
 ```bat
-certutil -hashfile PopLingo-win64.zip SHA256
+certutil -hashfile LinLingo-win64.zip SHA256
 ```
 
 與 Release 中的 `SHA256SUMS.txt` 比對即可。
@@ -174,13 +174,13 @@ certutil -hashfile PopLingo-win64.zip SHA256
 
 ## 贊助
 
-PopLingo 完全免費、開源、**沒有廣告、沒有追蹤、沒有付費版本**。
+LinLingo 完全免費、開源、**沒有廣告、沒有追蹤、沒有付費版本**。
 如果它替你省下了一些時間，歡迎請我喝一杯咖啡。
 
 | 方式 | 連結 |
 |---|---|
 | Ko-fi | https://ko-fi.com/bill_linch |
-| TWQR 台灣Pay | [官網贊助區](https://poplingo.billlinch.com/#sponsor) 掃碼即付 |
+| TWQR 台灣Pay | [官網贊助區](https://linlingo.billlinch.com/#sponsor) 掃碼即付 |
 
 贊助者名單：[SUPPORTERS.md](SUPPORTERS.md)
 

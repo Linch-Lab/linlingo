@@ -1,6 +1,6 @@
 {
-  "version": "1.0.1",
-  "url": "https://github.com/Linch-Lab/poplingo/releases/latest",
-  "notes": "修正 PowerPoint 中 Ctrl+Enter 無法回填的問題；新增 Ctrl+Alt+Enter 可從任何程式插入譯文。",
+  "version": "1.0.2",
+  "url": "https://github.com/Linch-Lab/linlingo/releases/latest",
+  "notes": "品牌更名為 LinLingo（原 PopLingo）；既有設定會自動沿用，不需重新填 API Key。",
   "mandatory": false
 }

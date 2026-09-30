@@ -19,6 +19,25 @@
 
 ---
 
+## [1.0.2] - 2026-09-29
+
+### 變更
+
+- **品牌更名：PopLingo → LinLingo**
+
+  原名稱已被兩個同類翻譯產品使用（Google Play 的 PopLingo Popup Dictionary
+  與 Chrome/Edge 的 Poplingo AI 翻譯）。兩者同屬翻譯軟體，
+  為避免商標混淆與搜尋結果被蓋掉，在正式對外推廣前更名。
+
+  影響範圍：產品名稱、執行檔名、發行檔名、官網網域
+  （改為 `linlingo.billlinch.com`）、GitHub 專案名稱。
+
+  **既有使用者不受影響**：設定檔會自動從 `%APPDATA%\PopLingo\`
+  搬移到 `%APPDATA%\LinLingo\`，API Key 與所有偏好設定都會保留，
+  不需要重新設定。
+
+---
+
 ## [1.0.1] - 2026-09-28
 
 ### 修正
@@ -71,7 +90,7 @@
 
 - 系統匣圖示：開啟時點亮、關閉時反灰
 - 應用內更新檢查（啟動時背景檢查 + 手動檢查）
-- 設定檔存於 `%APPDATA%\PopLingo`（更新不遺失），並支援可攜模式
+- 設定檔存於 `%APPDATA%\LinLingo`（更新不遺失），並支援可攜模式
 - 設定檔版本與遷移機制（`config_version` / `migrate_config`）
 - OpenAI 相容 API，可自由替換 DeepSeek / OpenAI / 阿里雲通義 / 智譜 GLM /
   Kimi / SiliconFlow / 騰訊混元 / 火山方舟 / MiniMax / Groq / Mistral /

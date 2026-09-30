@@ -1,12 +1,12 @@
 @echo off
 rem ============================================================
-rem  PopLingo cleanup - remove build artifacts and legacy files
+rem  LinLingo cleanup - remove build artifacts and legacy files
 rem  releases\ and config are NOT touched.
 rem ============================================================
 cd /d "%~dp0"
 
 echo ==========================================
-echo   PopLingo cleanup
+echo   LinLingo cleanup
 echo ==========================================
 echo.
 echo Will remove:

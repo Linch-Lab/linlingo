@@ -1,6 +1,6 @@
 @echo off
 rem ============================================================
-rem  PopLingo publish helper
+rem  LinLingo publish helper
 rem  This file lives in app\ but operates on the repository root
 rem  (one level up). Normally you can just use git directly.
 rem
@@ -20,7 +20,7 @@ if %errorlevel% neq 0 (
 )
 
 if "%~1"=="" (
-    set /p REPO="Enter GitHub repo URL (e.g. https://github.com/you/poplingo.git): "
+    set /p REPO="Enter GitHub repo URL (e.g. https://github.com/you/linlingo.git): "
 ) else (
     set "REPO=%~1"
 )

@@ -68,6 +68,12 @@ pre { padding: 10px 12px; overflow-x: auto; font-size: 14px; }
 /* ---- QR ---- */
 .qr { width: 200px; height: 200px; border: 1px solid #ddd; background: #fafafa; }
 
+/* ---- 操作示範影片 ---- */
+video.demo {
+  max-width: 100%; height: auto; display: block;
+  border: 1px solid #e3e3e3; border-radius: 4px; background: #fff;
+}
+
 /* ---- 頁尾 ---- */
 footer.site {
   margin-top: 60px; padding-top: 14px; border-top: 1px solid #ddd;

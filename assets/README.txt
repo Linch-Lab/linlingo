@@ -1,4 +1,4 @@
-這個資料夾放網站的圖片素材，同時也是應用程式圖示與 logo 的來源。
+這個資料夾放網站的圖片素材，同時也是應用程式圖示、logo 與示範影片的來源。
 
 ── 由程式產生（請勿手改）──
 
@@ -16,9 +16,16 @@
       設計：品牌藍漸層圓角方塊 + 白色對話框 + 翻譯雙箭頭
       32px 以下自動改用簡化的單箭頭版本
 
+  demo.gif              操作示範，620x392、10.3 秒、64 色、0.94 MB
+                        → 用於 GitHub README（markdown 不支援影片）
+  demo.mp4              同一段示範，h264 crf25、只有 0.10 MB
+                        → 用於官網（比 GIF 小 9.4 倍且更流暢）
+  demo-poster.png       demo.mp4 的海報圖
+      產生方式：python tools\make_demo_gif.py <你的錄影.mp4>
+      可調參數：--start / --end / --speed / --gif-fps / --colors / --width
+
 ── 手動放置 ──
 
-  demo.gif              30 秒動態展示（最能提升說服力）
   screenshot-1.png      主畫面截圖（卡片運作中）
   screenshot-2.png      設定視窗截圖
 

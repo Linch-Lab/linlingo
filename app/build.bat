@@ -40,7 +40,7 @@ if %errorlevel% neq 0 (
 )
 
 set "ICONARG="
-if exist "assets\app.ico" set "ICONARG=--icon assets\app.ico"
+if exist "..\assets\app.ico" set "ICONARG=--icon ..\assets\app.ico"
 
 rem Exclude heavy modules this app never uses but that PyInstaller may pull in
 rem from the local environment. numpy alone adds ~27MB (19MB OpenBLAS DLL),

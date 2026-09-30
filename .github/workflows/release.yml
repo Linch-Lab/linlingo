@@ -36,7 +36,7 @@ jobs:
       - name: 建置 exe
         run: >
           python -m PyInstaller --noconfirm --onedir --windowed --name LinLingo
-          --version-file version.txt --hidden-import pystray._win32 --collect-all pystray
+          --icon ../assets/app.ico --version-file version.txt --hidden-import pystray._win32 --collect-all pystray
           --exclude-module numpy --exclude-module scipy --exclude-module pandas
           --exclude-module matplotlib --exclude-module yaml --exclude-module psutil
           --exclude-module setuptools --exclude-module pip

@@ -50,7 +50,7 @@ except Exception:
 
 # ---------- 應用資訊（發版只需改這裡） ----------
 APP_NAME = "LinLingo"
-APP_VERSION = "1.0.2"
+APP_VERSION = "1.0.3"
 CONFIG_VERSION = 1
 
 # 建立 GitHub 專案後，只需改這幾行

@@ -1,6 +1,6 @@
 {
-  "version": "1.0.2",
+  "version": "1.0.3",
   "url": "https://github.com/Linch-Lab/linlingo/releases/latest",
-  "notes": "品牌更名為 LinLingo（原 PopLingo）；既有設定會自動沿用，不需重新填 API Key。",
+  "notes": "新增程式與網站的應用程式圖示，並改善社群分享預覽。",
   "mandatory": false
 }

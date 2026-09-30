@@ -11,8 +11,9 @@ header.site {
   display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap;
   padding: 20px 0 10px; border-bottom: 1px solid #e5e5e5;
 }
-header.site .brand { margin: 0; font-size: 24px; font-weight: 700; }
-header.site .brand a { color: #222; text-decoration: none; }
+header.site .brand { margin: 0; }
+header.site .brand a { display: block; line-height: 0; }
+header.site .brand img { height: 30px; width: auto; display: block; }
 header.site .ver { color: #999; font-size: 14px; }
 header.site .spacer { flex: 1 1 auto; }
 header.site .lang { font-size: 14px; }

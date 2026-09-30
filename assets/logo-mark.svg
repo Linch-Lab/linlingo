@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48.00 48.00" width="48.00" height="48.00" role="img" aria-label="LinLingo">
+  <defs>
+    <linearGradient id="lg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#567AFF"/>
+      <stop offset="1" stop-color="#0B3FB0"/>
+    </linearGradient>
+  </defs>
+  <g transform="translate(2.00,2.00) scale(0.171875)">
+    <rect x="0" y="0" width="256" height="256" rx="58" fill="url(#lg)"/>
+    <rect x="42" y="46" width="172" height="116" rx="32" fill="#FFFFFF"/>
+    <path d="M64 140 L62 206 L122 158 Z" fill="#FFFFFF"/>
+    <polygon points="74,72 156,72 156,57 186,82 156,107 156,92 74,92" fill="#0D47BE"/>
+    <polygon points="186,118 104,118 104,103 74,128 104,153 104,138 186,138" fill="#0D47BE"/>
+  </g>
+</svg>

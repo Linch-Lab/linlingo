@@ -1,3 +1,8 @@
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/logo-white.svg">
+  <img alt="LinLingo" src="assets/logo.svg" width="240">
+</picture>
+
 # LinLingo
 
 Windows 全域熱鍵即時翻譯工具。

@@ -21,22 +21,40 @@ ErrorDocument 404 /404.html
   AddOutputFilterByType DEFLATE image/svg+xml
 </IfModule>
 
-# 瀏覽器快取
+# 快取策略
+#
+# HTML 一定要「每次重新驗證」。原本設成 1 小時，結果 Hostinger 的 CDN
+# （Server: hcdn）在部署後仍持續回傳舊版頁面，訪客最多會看到一小時前的內容。
+# 靜態素材才適合長快取，但本專案仍在頻繁更新，先用 1 小時以免改了看不到。
 <IfModule mod_expires.c>
   ExpiresActive On
-  ExpiresByType text/html        "access plus 1 hour"
-  ExpiresByType text/css         "access plus 1 month"
-  ExpiresByType image/png        "access plus 1 month"
-  ExpiresByType image/jpeg       "access plus 1 month"
-  ExpiresByType image/svg+xml    "access plus 1 month"
-  ExpiresByType image/x-icon     "access plus 1 year"
+  ExpiresByType text/html        "access plus 0 seconds"
+  ExpiresByType text/css         "access plus 1 hour"
+  ExpiresByType image/png        "access plus 1 hour"
+  ExpiresByType image/jpeg       "access plus 1 hour"
+  ExpiresByType image/svg+xml    "access plus 1 hour"
+  ExpiresByType image/x-icon     "access plus 1 hour"
+  ExpiresByType video/mp4        "access plus 1 hour"
   ExpiresByType application/zip  "access plus 1 year"
 </IfModule>
 
-# 基本安全標頭
+# 基本安全標頭 + 明確的快取控制
 <IfModule mod_headers.c>
   Header set X-Content-Type-Options "nosniff"
   Header set Referrer-Policy "strict-origin-when-cross-origin"
+
+  # HTML 一律重新驗證：確保部署後立刻生效
+  <FilesMatch "\.(html|htm)$">
+    Header set Cache-Control "no-cache, must-revalidate, max-age=0"
+  </FilesMatch>
+  # 樣式
+  <FilesMatch "\.(css|js)$">
+    Header set Cache-Control "public, max-age=3600"
+  </FilesMatch>
+  # 圖片與影片
+  <FilesMatch "\.(png|jpe?g|gif|svg|ico|webp|mp4|webm)$">
+    Header set Cache-Control "public, max-age=3600"
+  </FilesMatch>
 </IfModule>
 
 # 不要列出目錄內容

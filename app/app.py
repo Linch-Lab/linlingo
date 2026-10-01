@@ -50,7 +50,7 @@ except Exception:
 
 # ---------- 應用資訊（發版只需改這裡） ----------
 APP_NAME = "LinLingo"
-APP_VERSION = "1.0.3"
+APP_VERSION = "1.1.0"
 CONFIG_VERSION = 1
 
 # 建立 GitHub 專案後，只需改這幾行
@@ -234,6 +234,10 @@ DEFAULT_CONFIG = {
     "commit_global_vk": 0x0D,      # Enter ｜ 隨處可用的「插入譯文」熱鍵
     "commit_global_mods": 0x0003,  # ALT|CTRL => Ctrl+Alt+Enter
     "auto_space": True,        # 回填英文等語言時自動補一個空格
+    # 卡片位置：null = 每次開啟都置中於目標視窗所在螢幕；
+    # 一旦被拖曳過就會記住座標（見卡片位置歸中）
+    "card_x": None,
+    "card_y": None,
 }
 
 SOURCE_LANGS = [
@@ -374,6 +378,10 @@ def _setup_signatures():
     user32.SetWindowPos.argtypes = [wintypes.HWND, wintypes.HWND, ctypes.c_int, ctypes.c_int,
                                     ctypes.c_int, ctypes.c_int, ctypes.c_uint]
     user32.SetWindowPos.restype = wintypes.BOOL
+    user32.MonitorFromWindow.argtypes = [wintypes.HWND, wintypes.DWORD]
+    user32.MonitorFromWindow.restype = ctypes.c_void_p
+    user32.GetMonitorInfoW.argtypes = [ctypes.c_void_p, ctypes.c_void_p]
+    user32.GetMonitorInfoW.restype = wintypes.BOOL
     user32.GetMessageW.argtypes = [ctypes.POINTER(wintypes.MSG), wintypes.HWND,
                                    ctypes.c_uint, ctypes.c_uint]
     user32.GetMessageW.restype = ctypes.c_int
@@ -550,6 +558,38 @@ def virtual_screen_rect():
     w = user32.GetSystemMetrics(78)  # SM_CXVIRTUALSCREEN
     h = user32.GetSystemMetrics(79)  # SM_CYVIRTUALSCREEN
     return x, y, w, h
+
+
+class _RECT(ctypes.Structure):
+    _fields_ = [("left", wintypes.LONG), ("top", wintypes.LONG),
+                ("right", wintypes.LONG), ("bottom", wintypes.LONG)]
+
+
+class _MONITORINFO(ctypes.Structure):
+    _fields_ = [("cbSize", wintypes.DWORD), ("rcMonitor", _RECT),
+                ("rcWork", _RECT), ("dwFlags", wintypes.DWORD)]
+
+
+def get_monitor_rect(hwnd=None):
+    """回傳指定視窗所在螢幕的「工作區」範圍 (x, y, w, h)。
+
+    用工作區而非整個螢幕範圍，置中時才不會被工作列遮住。
+    取不到就退回主要螢幕，再退回整個虛擬桌面。
+    """
+    if not IS_WINDOWS:
+        return virtual_screen_rect()
+    try:
+        MONITOR_DEFAULTTONEAREST = 2
+        hmon = user32.MonitorFromWindow(hwnd or 0, MONITOR_DEFAULTTONEAREST)
+        if hmon:
+            mi = _MONITORINFO()
+            mi.cbSize = ctypes.sizeof(_MONITORINFO)
+            if user32.GetMonitorInfoW(hmon, ctypes.byref(mi)):
+                r = mi.rcWork
+                return r.left, r.top, r.right - r.left, r.bottom - r.top
+    except Exception:
+        pass
+    return virtual_screen_rect()
 
 
 def enable_dpi_awareness():
@@ -773,21 +813,45 @@ class KeyboardHook:
 
 
 # ---------- 翻譯 ----------
+def _same_text(a, b):
+    """判斷譯文是否其實就是原文（模型沒有真的翻譯，只是照抄或改寫）。"""
+    def norm(s):
+        s = (s or "").strip().lower()
+        for ch in " \t\r\n.!?,;:。！？，、；：\"'「」『』":
+            s = s.replace(ch, "")
+        return s
+    na = norm(a)
+    return bool(na) and na == norm(b)
+
+
 def call_translate(text, source, target, cfg):
     style = cfg.get("style", "學術")
     style_hint = STYLE_PROMPTS.get(style, "")
     system_msg = "你是專業翻譯引擎。只輸出翻譯結果本身，不要任何說明、註解或前後文。" + style_hint
     target2 = (cfg.get("target_lang2") or "").strip()
     if target2:
-        # 原文若已是目標語言，改翻成第二語言。
-        # 明確列出規則，避免短句（例如兩三個中文字）被誤判為「已經是目標語言」。
+        # 原文已是目標語言時改翻成第二語言。
+        #
+        # 提示詞設計要點（已用真實 API 實測 24 次驗證）：
+        #  * 絕對不可以把「翻譯成{目標}」寫在第一行當主要指令 ——
+        #    模型會直接照做而忽略後面的條件，英文輸入就原樣輸出（功能失效）。
+        #    必須讓「先判斷語言，再決定翻成哪個語言」成為主要指令。
+        #  * 必須明確要求「輸出真正的譯文，不要換句話說」，因為模型有時
+        #    會把英文改寫成另一句英文來交差。
+        #  * 要提醒短句仍須正常判斷語言，否則兩三個中文字會被誤判為目標語言。
         user_msg = (
-            "將以下文字翻譯成{0}。\n"
+            "請先判斷原文的主要語言，再依規則輸出譯文。\n"
+            "\n"
             "規則：\n"
-            "1. 只有當原文的主要語言「確實已經是{0}」時，才改翻譯成{1}。\n"
-            "2. 若原文是中文、日文、韓文或其他任何語言，一律翻譯成{0}。\n"
-            "3. 原文長度很短（例如只有兩三個字）時，不代表它已經是{0}。\n"
-            "只輸出翻譯結果：\n\n{2}"
+            "- 原文的主要語言是「{0}」→ 翻譯成「{1}」\n"
+            "- 原文是其他任何語言（例如中文、日文、韓文、法文）→ 翻譯成「{0}」\n"
+            "\n"
+            "務必注意：\n"
+            "- 原文很短（例如只有兩三個字）時仍要正常判斷語言，不可因為短就當成「{0}」\n"
+            "- 務必輸出真正的譯文，不要換句話說、不要只改寫同一個語言\n"
+            "- 只輸出譯文本身，不要說明、不要標註語言\n"
+            "\n"
+            "原文：\n{2}"
         ).format(target, target2, text)
     elif source and source != "自動偵測":
         user_msg = "把以下{}文字翻譯成{}：\n\n{}".format(source, target, text)
@@ -844,9 +908,22 @@ def call_translate(text, source, target, cfg):
         raise RuntimeError("連線失敗：{}".format(e))
 
     try:
-        return data["choices"][0]["message"]["content"].strip()
+        result = data["choices"][0]["message"]["content"].strip()
     except (KeyError, IndexError, TypeError):
         raise RuntimeError("回應格式異常：" + json.dumps(data, ensure_ascii=False)[:300])
+
+    # 第二外語模式的安全網：模型偶爾仍會把原文照抄。
+    # 偵測到譯文與原文相同時，開啟思考模式重試一次。
+    if target2 and _same_text(text, result):
+        try:
+            payload["thinking"] = {"type": "enabled"}
+            data = _post(payload)
+            retry = data["choices"][0]["message"]["content"].strip()
+            if retry and not _same_text(text, retry):
+                return retry
+        except Exception:
+            pass
+    return result
 
 
 # ---------- 浮動卡片 ----------
@@ -887,6 +964,7 @@ class FloatingCard:
         dragbar.pack_propagate(False)
         dragbar.bind("<ButtonPress-1>", self._start_drag)
         dragbar.bind("<B1-Motion>", self._on_drag)
+        dragbar.bind("<ButtonRelease-1>", self._end_drag)
 
         self.orig = tk.Text(inner, bg=CARD_BG, fg=self.orig_color, insertbackground=self.trans_color,
                             relief="flat", borderwidth=0, highlightthickness=0, wrap="word",
@@ -902,6 +980,7 @@ class FloatingCard:
         self.trans.bind("<Double-Button-1>", lambda e: self.app.copy_translation())
         self.trans.bind("<ButtonPress-1>", self._start_drag)
         self.trans.bind("<B1-Motion>", self._on_drag)
+        self.trans.bind("<ButtonRelease-1>", self._end_drag)
 
         self.trans2 = tk.Label(inner, text="", bg=CARD_BG, fg=self.trans_color,
                                justify="left", anchor="nw", wraplength=420,
@@ -909,6 +988,7 @@ class FloatingCard:
         self.trans2.bind("<Double-Button-1>", lambda e: self.app.copy_translation2())
         self.trans2.bind("<ButtonPress-1>", self._start_drag)
         self.trans2.bind("<B1-Motion>", self._on_drag)
+        self.trans2.bind("<ButtonRelease-1>", self._end_drag)
 
         # 熱鍵綁定（焦點在卡片時也可用）
         self.win.bind("<Escape>", lambda e: self.app.cancel())
@@ -942,7 +1022,14 @@ class FloatingCard:
         self._drag_off = (e.x_root - self.pos[0], e.y_root - self.pos[1])
 
     def _on_drag(self, e):
+        # 使用者一旦拖曳，位置就由他決定，程式不再自動移動卡片
+        self.app.card_moved_by_user = True
         self.move_to(e.x_root - self._drag_off[0], e.y_root - self._drag_off[1])
+
+    def _end_drag(self, e=None):
+        """拖曳結束：記住位置，之後每次開啟都回到這裡。"""
+        if getattr(self.app, "card_moved_by_user", False):
+            self.app.save_card_position(self.pos)
 
     def move_to(self, x, y):
         # 夾取到整個虛擬桌面（含所有螢幕）範圍內，避免拖到看不見
@@ -1037,9 +1124,16 @@ class FloatingCard:
         self.set_trans2("")
         self._resize()
 
-    def show_at(self, x, y):
+    def show_at(self, x=None, y=None):
+        """顯示卡片。沒給座標就置中於目標視窗所在的螢幕。"""
         self.win.deiconify()
         self._resize()
+        if x is None or y is None:
+            mx, my, mw, mh = get_monitor_rect(self.app.target_hwnd)
+            w = self.win.winfo_width() or self.win.winfo_reqwidth()
+            h = self.win.winfo_height() or self.win.winfo_reqheight()
+            x = mx + (mw - w) // 2
+            y = my + (mh - h) // 2
         self.move_to(x, y)
 
     def hide(self):
@@ -1110,7 +1204,7 @@ class TranslatorApp:
         self._tray_lit = None
         self._tray_dim = None
         self._focus_key = None
-        self._fallback_pos = None
+        self.card_moved_by_user = False   # 使用者拖曳過卡片後就不再自動移動
         self._last_commit_hwnd = None
         self._last_commit_time = 0.0
 
@@ -1191,22 +1285,39 @@ class TranslatorApp:
         user32.GetWindowThreadProcessId(fg, ctypes.byref(pid))
         return pid.value == os.getpid()
 
-    def _card_position(self):
-        # 1) 系統文字游標（caret）下方 —— 標準 Win32 輸入框最準
-        r = get_caret_rect()
-        if r:
-            return r[0], r[3] + 2
-        # 2) 抓不到系統 caret（Chrome/Electron 等自繪游標）時，
-        #    用最近一次點擊位置近似文字游標
-        if self._fallback_pos:
-            return self._fallback_pos[0], self._fallback_pos[1] + 16
-        # 3) 目標輸入框下方
-        if self.target_hwnd:
-            wr = get_window_rect(self.target_hwnd)
-            if wr:
-                return wr[0], wr[3] + 8
-        # 4) 預設
-        return 100, 100
+    # ---------- 卡片位置 ----------
+    def _card_home_position(self):
+        """卡片開啟時的位置。
+
+        使用者拖曳過就用他放的位置（記在設定檔），否則回傳 None
+        代表「置中於目標視窗所在的螢幕」。
+        """
+        x = self.cfg.get("card_x")
+        y = self.cfg.get("card_y")
+        if isinstance(x, int) and isinstance(y, int):
+            return x, y
+        return None
+
+    def save_card_position(self, pos):
+        """記住使用者拖曳後的位置。"""
+        try:
+            self.cfg["card_x"] = int(pos[0])
+            self.cfg["card_y"] = int(pos[1])
+            save_config(self.cfg)
+        except Exception:
+            pass
+
+    def reset_card_position(self):
+        """清除記住的位置，下次開啟回到螢幕中央。"""
+        self.cfg.pop("card_x", None)
+        self.cfg.pop("card_y", None)
+        save_config(self.cfg)
+        if self.mode_on and self.card.is_visible():
+            mx, my, mw, mh = get_monitor_rect(self.target_hwnd)
+            w = self.card.win.winfo_width() or self.card.win.winfo_reqwidth()
+            h = self.card.win.winfo_height() or self.card.win.winfo_reqheight()
+            self.card.move_to(mx + (mw - w) // 2, my + (mh - h) // 2)
+        self.status_var.set("↺ 卡片已置中於目前螢幕")
 
     def card_is_empty(self):
         return not self.card.get_orig().strip()
@@ -1232,14 +1343,16 @@ class TranslatorApp:
         if self.mode_on:
             self.target_hwnd = get_focus_hwnd()
             self._focus_key = (self.target_hwnd, get_caret_rect())
-            self._fallback_pos = get_cursor_pos()
             self._last_commit_hwnd = None
             self.status_var.set("翻譯模式：開啟 ｜ 在卡片輸入")
             self.card.set_orig("")
             self.card.set_trans("")
             self.card.set_trans2("")
-            x, y = self._card_position()
-            self.card.show_at(x, y)
+            home = self._card_home_position()
+            if home:
+                self.card.show_at(home[0], home[1])   # 回到使用者拖曳過的位置
+            else:
+                self.card.show_at()                   # 置中於目標視窗所在的螢幕
             self.card.focus()  # 卡片取得焦點，可直接打字（含注音 IME）
         else:
             self.status_var.set("翻譯模式：關閉")
@@ -1439,7 +1552,12 @@ class TranslatorApp:
 
     # ---------- 事件迴圈 ----------
     def _watch_focus(self):
-        """模式開啟時偵測焦點變化：切換到別的輸入框就更新回填目標與卡片位置。"""
+        """模式開啟時偵測焦點變化：點到別的輸入框就更新「回填目標」。
+
+        這裡刻意「不再移動卡片」。卡片位置由使用者決定 ——
+        開啟時置中於目前螢幕，拖曳過後固定不動。
+        跟隨文字游標會在打字、換行、切換欄位時不停跳動，反而干擾閱讀。
+        """
         if self.mode_on:
             try:
                 if not self.is_focus_our_window():
@@ -1448,12 +1566,8 @@ class TranslatorApp:
                     key = (hwnd, r)
                     if key != self._focus_key:
                         self._focus_key = key
-                        self._fallback_pos = get_cursor_pos()
                         if hwnd:
                             self.target_hwnd = hwnd
-                            if self.card.is_visible():
-                                x, y = self._card_position()
-                                self.card.move_to(x, y)
             except Exception:
                 pass
         self.root.after(250, self._watch_focus)
@@ -1752,6 +1866,7 @@ class TranslatorApp:
                     pystray.MenuItem("使用說明", self._on_tray_help),
                     pystray.MenuItem("贊助", self._on_tray_sponsor),
                     pystray.MenuItem("檢查更新", self._on_tray_update),
+                    pystray.MenuItem("卡片位置歸中", self._on_tray_center),
                     pystray.Menu.SEPARATOR,
                     pystray.MenuItem("退出", self._on_tray_quit),
                 ),
@@ -1764,6 +1879,9 @@ class TranslatorApp:
         except Exception as e:
             self.status_var.set("系統匣圖示啟動失敗：" + str(e))
             log("系統匣圖示啟動失敗：{}".format(e))
+
+    def _on_tray_center(self, icon, item):
+        self.root.after(0, self.reset_card_position)
 
     def _on_tray_settings(self, icon, item):
         self.root.after(0, self.open_settings)

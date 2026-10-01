@@ -1,6 +1,6 @@
 {
-  "version": "1.0.3",
+  "version": "1.1.0",
   "url": "https://github.com/Linch-Lab/linlingo/releases/latest",
-  "notes": "新增程式與網站的應用程式圖示，並改善社群分享預覽。",
+  "notes": "修正第二外語翻譯（英文輸入未翻成第二語言），並將卡片改為置中於目前螢幕、拖曳後固定位置。",
   "mandatory": false
 }

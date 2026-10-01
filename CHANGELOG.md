@@ -11,6 +11,14 @@
 
 ## [Unreleased]
 
+### 新增（網站）
+
+- 技術文章〈[為什麼我不攔截鍵盤](https://linlingo.billlinch.com/keyboard-hook-and-ime.html)〉
+  —— 說明中文輸入法（IME）的組字原理、低階鍵盤掛鉤為什麼會破壞組字，
+  以及改用「卡片即輸入面」的實作取捨。中英文各一頁
+- 導覽列新增「技術筆記 / Notes」
+- `sitemap.xml` 新增 2 個網址（共 14 個）
+
 ### 規劃中
 
 - 首次啟動引導精靈（選語言 → 填 API Key → 測試連線）

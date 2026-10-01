@@ -142,6 +142,19 @@ def main():
     frame(180).save(touch, "PNG")
     print("  wrote %s (180x180)" % touch)
 
+    # Google 搜尋結果的網站圖示建議至少 48x48，且以 48 的倍數為佳
+    png96 = os.path.join(assets, "favicon-96.png")
+    frame(96).save(png96, "PNG")
+    print("  wrote %s (96x96)" % png96)
+
+    # 網站根目錄的 favicon.ico。
+    # 瀏覽器與 Google 都會自動去抓 https://<網域>/favicon.ico，
+    # 這個位置沒有檔案是最常見的「分頁沒有圖示」原因。
+    root_ico = os.path.join(root, "favicon.ico")
+    frames[-1].save(root_ico, format="ICO",
+                    sizes=[(s, s) for s in sizes], append_images=frames[:-1])
+    print("  wrote %s (site root)" % root_ico)
+
     preview = os.path.join(os.environ.get("TEMP", root), "linlingo-icon-preview.png")
     sheet = Image.new("RGBA", (256 + 64 + 48 + 32 + 16 + 96, 280), (245, 245, 248, 255))
     x = 16

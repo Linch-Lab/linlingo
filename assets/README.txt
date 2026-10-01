@@ -8,8 +8,12 @@
       產生方式：python tools\make_logo.py
       文字已轉成向量路徑，不依賴使用者字型
 
-  app.ico               應用程式圖示 / favicon
+  app.ico               應用程式圖示（exe 用）
                         內含 16/24/32/48/64/128/256 七種尺寸
+  favicon-96.png        網站圖示 PNG 版（96x96，Google 建議至少 48x48）
+
+  另外會在倉庫根目錄產生 favicon.ico（網站圖示的標準位置，
+  瀏覽器與 Google 都會自動去抓，少了它最常見的症狀就是分頁沒有圖示）
   apple-touch-icon.png  iOS / Safari 加入書籤用（180x180）
   og-image.png          社群分享縮圖（1200x630）
       產生方式：python tools\make_og_image.py

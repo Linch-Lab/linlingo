@@ -11,7 +11,10 @@
   app.ico               應用程式圖示 / favicon
                         內含 16/24/32/48/64/128/256 七種尺寸
   apple-touch-icon.png  iOS / Safari 加入書籤用（180x180）
-  og-image.png          社群分享預覽（1200x630）
+  og-image.png          社群分享縮圖（1200x630）
+      產生方式：python tools\make_og_image.py
+      使用正式的 logo（assets/logo-white.svg）渲染，不是另外排字
+      內容置中，確保被平台裁成方形時 logo 不會被裁掉
       產生方式：python tools\make_icon.py
       設計：品牌藍漸層圓角方塊 + 白色對話框 + 翻譯雙箭頭
       32px 以下自動改用簡化的單箭頭版本

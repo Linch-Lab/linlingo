@@ -118,34 +118,6 @@ def downscale(img, size):
 SMALL_MAX = 32
 
 
-# ---------------------------------------------------------------- social card
-def og_image(path):
-    W, H = 1200, 630
-    tile = gradient(max(W, H)).crop((0, 0, W, H))
-    img = tile.copy()
-    d = ImageDraw.Draw(img)
-
-    icon = downscale(master(small=False), 190)
-    img.paste(icon, (78, 92), icon)
-
-    def font(name, size):
-        for c in (name, "segoeui.ttf", "arial.ttf"):
-            try:
-                return ImageFont.truetype(c, size)
-            except Exception:
-                continue
-        return ImageFont.load_default()
-
-    d.text((78, 330), "LinLingo",
-           font=font("seguisb.ttf", 96), fill=WHITE)
-    d.text((82, 448), "Instant translation for Windows",
-           font=font("segoeui.ttf", 40), fill=(214, 224, 255))
-    d.text((82, 510), "Ctrl+Alt+T  in any text box  -  type  -  Enter",
-           font=font("segoeui.ttf", 30), fill=(168, 190, 240))
-    img.save(path, "PNG")
-    print("  wrote %s (%dx%d)" % (path, W, H))
-
-
 # ---------------------------------------------------------------- main
 def main():
     root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -180,7 +152,8 @@ def main():
     sheet.save(preview, "PNG")
     print("  wrote %s (review sheet)" % preview)
 
-    og_image(os.path.join(assets, "og-image.png"))
+    # 社群分享縮圖由 tools/make_og_image.py 產生（使用正式的 logo 向量檔），
+    # 這裡不再另外繪製，避免同一張圖有兩套來源。
     return 0
 
 

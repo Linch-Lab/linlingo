@@ -44,13 +44,14 @@ try:
     user32 = ctypes.windll.user32
     kernel32 = ctypes.windll.kernel32
     imm32 = ctypes.windll.imm32
+    gdi32 = ctypes.windll.gdi32
 except Exception:
     IS_WINDOWS = False
     user32 = kernel32 = imm32 = None
 
 # ---------- 應用資訊（發版只需改這裡） ----------
 APP_NAME = "LinLingo"
-APP_VERSION = "1.1.0"
+APP_VERSION = "1.2.0"
 CONFIG_VERSION = 1
 
 # 建立 GitHub 專案後，只需改這幾行
@@ -220,6 +221,8 @@ DEFAULT_CONFIG = {
     "card_orig_color": "#b8b8c8",   # 卡片內「輸入文字」顏色
     "card_trans_size": 12,     # 卡片內「翻譯文字」字級
     "card_trans_color": "#ffffff",  # 卡片內「翻譯文字」顏色
+    "card_bg": "#1c1c28",      # 卡片底色
+    "card_radius": 14,         # 卡片圓角半徑（px，0 = 直角）
     "toggle_vk": 0x54,         # 'T'
     "toggle_mods": 0x0003,     # ALT|CTRL => Ctrl+Alt+T
     "commit_vk": 0x0D,         # Enter
@@ -382,6 +385,11 @@ def _setup_signatures():
     user32.MonitorFromWindow.restype = ctypes.c_void_p
     user32.GetMonitorInfoW.argtypes = [ctypes.c_void_p, ctypes.c_void_p]
     user32.GetMonitorInfoW.restype = wintypes.BOOL
+    # 圓角卡片：把視窗裁成圓角矩形（CreateRoundRectRgn 屬於 gdi32）
+    user32.SetWindowRgn.argtypes = [wintypes.HWND, ctypes.c_void_p, wintypes.BOOL]
+    user32.SetWindowRgn.restype = ctypes.c_int
+    gdi32.CreateRoundRectRgn.argtypes = [ctypes.c_int] * 6
+    gdi32.CreateRoundRectRgn.restype = ctypes.c_void_p
     user32.GetMessageW.argtypes = [ctypes.POINTER(wintypes.MSG), wintypes.HWND,
                                    ctypes.c_uint, ctypes.c_uint]
     user32.GetMessageW.restype = ctypes.c_int
@@ -933,6 +941,44 @@ CARD_FG_TRANS = "#ffffff"
 CARD_ACCENT = "#3d5afe"
 
 
+def shade_color(hex_color, factor):
+    """把顏色提亮（factor > 0）或調暗（factor < 0），回傳 #rrggbb。
+
+    用來從卡片底色推出外框線顏色：使用者換底色時框線會自動協調，
+    不必再多一個設定項。
+    """
+    try:
+        h = (hex_color or "").strip().lstrip("#")
+        if len(h) == 3:
+            h = "".join(ch * 2 for ch in h)
+        if len(h) != 6:
+            return hex_color
+        r, g, b = (int(h[i:i + 2], 16) for i in (0, 2, 4))
+        if factor >= 0:
+            r = r + (255 - r) * factor
+            g = g + (255 - g) * factor
+            b = b + (255 - b) * factor
+        else:
+            f = 1.0 + factor
+            r, g, b = r * f, g * f, b * f
+        clamp = lambda v: max(0, min(255, int(round(v))))  # noqa: E731
+        return "#{:02x}{:02x}{:02x}".format(clamp(r), clamp(g), clamp(b))
+    except Exception:
+        return hex_color
+
+
+def border_for(hex_color):
+    """由卡片底色推出外框線顏色。
+
+    亮色底（例如白色）再提亮就看不出來，這時改為稍微調暗，
+    確保外框在任何底色上都看得見。
+    """
+    up = shade_color(hex_color, 0.18)
+    if (up or "").lower() == (hex_color or "").lower():
+        return shade_color(hex_color, -0.12)
+    return up
+
+
 class FloatingCard:
     """極簡、半透明、隨文字量自動變大的浮動卡片。"""
 
@@ -944,6 +990,9 @@ class FloatingCard:
         self.orig_color = cfg.get("card_orig_color", "#b8b8c8")
         self.trans_size = int(cfg.get("card_trans_size", 12))
         self.trans_color = cfg.get("card_trans_color", "#ffffff")
+        self.bg = cfg.get("card_bg", CARD_BG)
+        self.border = border_for(self.bg)             # 外框線由底色自動推導
+        self.radius = max(0, min(40, int(cfg.get("card_radius", 14))))
 
         self.win = tk.Toplevel(root)
         self.win.overrideredirect(True)
@@ -953,27 +1002,28 @@ class FloatingCard:
         except Exception:
             pass
 
-        outer = tk.Frame(self.win, bg="#3a3a48")
-        outer.pack(fill="both", expand=True)
-        inner = tk.Frame(outer, bg=CARD_BG)
-        inner.pack(fill="both", expand=True, padx=1, pady=1)
+        self.outer = tk.Frame(self.win, bg=self.border)
+        self.outer.pack(fill="both", expand=True)
+        self.inner = tk.Frame(self.outer, bg=self.bg)
+        self.inner.pack(fill="both", expand=True, padx=1, pady=1)
 
         # 頂部拖曳條（無任何文字），用來移動卡片
-        dragbar = tk.Frame(inner, bg=CARD_BG, height=7, cursor="fleur")
-        dragbar.pack(fill="x", side="top")
-        dragbar.pack_propagate(False)
-        dragbar.bind("<ButtonPress-1>", self._start_drag)
-        dragbar.bind("<B1-Motion>", self._on_drag)
-        dragbar.bind("<ButtonRelease-1>", self._end_drag)
+        self.dragbar = tk.Frame(self.inner, bg=self.bg, height=7, cursor="fleur")
+        self.dragbar.pack(fill="x", side="top")
+        self.dragbar.pack_propagate(False)
+        self.dragbar.bind("<ButtonPress-1>", self._start_drag)
+        self.dragbar.bind("<B1-Motion>", self._on_drag)
+        self.dragbar.bind("<ButtonRelease-1>", self._end_drag)
 
-        self.orig = tk.Text(inner, bg=CARD_BG, fg=self.orig_color, insertbackground=self.trans_color,
+        self.orig = tk.Text(self.inner, bg=self.bg, fg=self.orig_color,
+                            insertbackground=self.trans_color,
                             relief="flat", borderwidth=0, highlightthickness=0, wrap="word",
                             font=("Microsoft YaHei UI", self.orig_size), padx=6, pady=0, cursor="arrow")
         self.orig.pack(fill="x", side="top")
         self.orig.bind("<<Modified>>", self._on_modified)
         self.orig.bind("<Button-1>", self._focus_orig)
 
-        self.trans = tk.Label(inner, text="", bg=CARD_BG, fg=self.trans_color,
+        self.trans = tk.Label(self.inner, text="", bg=self.bg, fg=self.trans_color,
                               justify="left", anchor="nw", wraplength=420,
                               font=("Microsoft YaHei UI", self.trans_size, "bold"))
         self.trans.pack(fill="x", side="top", padx=6, pady=(2, 2))
@@ -982,7 +1032,7 @@ class FloatingCard:
         self.trans.bind("<B1-Motion>", self._on_drag)
         self.trans.bind("<ButtonRelease-1>", self._end_drag)
 
-        self.trans2 = tk.Label(inner, text="", bg=CARD_BG, fg=self.trans_color,
+        self.trans2 = tk.Label(self.inner, text="", bg=self.bg, fg=self.trans_color,
                                justify="left", anchor="nw", wraplength=420,
                                font=("Microsoft YaHei UI", self.trans_size, "bold"))
         self.trans2.bind("<Double-Button-1>", lambda e: self.app.copy_translation2())
@@ -1110,11 +1160,22 @@ class FloatingCard:
         self.orig_color = cfg.get("card_orig_color", "#b8b8c8")
         self.trans_size = int(cfg.get("card_trans_size", 12))
         self.trans_color = cfg.get("card_trans_color", "#ffffff")
-        self.orig.config(fg=self.orig_color, insertbackground=self.trans_color,
+        self.bg = cfg.get("card_bg", CARD_BG)
+        self.border = border_for(self.bg)
+        self.radius = max(0, min(40, int(cfg.get("card_radius", 14))))
+        try:
+            self.win.attributes("-alpha", float(cfg.get("alpha", 0.88)))
+        except Exception:
+            pass
+        # 底色要套用到整棵卡片樹
+        self.outer.config(bg=self.border)
+        self.inner.config(bg=self.bg)
+        self.dragbar.config(bg=self.bg)
+        self.orig.config(bg=self.bg, fg=self.orig_color, insertbackground=self.trans_color,
                          font=("Microsoft YaHei UI", self.orig_size))
-        self.trans.config(fg=self.trans_color,
+        self.trans.config(bg=self.bg, fg=self.trans_color,
                           font=("Microsoft YaHei UI", self.trans_size, "bold"))
-        self.trans2.config(fg=self.trans_color,
+        self.trans2.config(bg=self.bg, fg=self.trans_color,
                            font=("Microsoft YaHei UI", self.trans_size, "bold"))
         self._resize()
 
@@ -1141,6 +1202,31 @@ class FloatingCard:
 
     def is_visible(self):
         return self.win.state() != "withdrawn"
+
+    def _apply_round_region(self):
+        """把視窗裁成圓角矩形。
+
+        Tk 的無框視窗做不出圓角，Windows 也沒有給無框視窗用的圓角 API，
+        所以用 SetWindowRgn + CreateRoundRectRgn 直接裁切視窗區域。
+        半徑為 0 或非 Windows 時維持矩形。視窗每次改變大小都要重新套用。
+        """
+        if not IS_WINDOWS:
+            return
+        try:
+            hwnd = self.win.winfo_id()
+            if self.radius <= 0:
+                user32.SetWindowRgn(hwnd, None, True)   # 取消區域
+                return
+            w = max(1, self.win.winfo_width())
+            h = max(1, self.win.winfo_height())
+            # CreateRoundRectRgn 的右／下邊界是「不含」，所以要 +1
+            rgn = gdi32.CreateRoundRectRgn(0, 0, w + 1, h + 1,
+                                           self.radius * 2, self.radius * 2)
+            if rgn:
+                # 成功後區域交由系統管理，不可再 DeleteObject
+                user32.SetWindowRgn(hwnd, rgn, True)
+        except Exception:
+            pass
 
     def _resize(self):
         fs = tkfont.Font(font=("Microsoft YaHei UI", self.orig_size))
@@ -1183,6 +1269,8 @@ class FloatingCard:
         req_w = max(p.winfo_reqwidth() for p in parts) + PAD_X
         req_h = sum(p.winfo_reqheight() for p in parts) + PAD_Y + DRAG_H
         self.win.geometry("{}x{}".format(int(req_w), int(req_h)))
+        self.win.update_idletasks()
+        self._apply_round_region()      # 尺寸變了要重套圓角
         # Tk 的 geometry 可能把視窗移回舊位置，用 Win32 重新套用實際位置
         if IS_WINDOWS:
             move_window(self.win.winfo_id(), self.pos[0], self.pos[1])
@@ -1723,17 +1811,21 @@ class TranslatorApp:
         orig_color_var = tk.StringVar(value=self.cfg.get("card_orig_color", "#b8b8c8"))
         trans_size_var = tk.StringVar(value=str(self.cfg.get("card_trans_size", 12)))
         trans_color_var = tk.StringVar(value=self.cfg.get("card_trans_color", "#ffffff"))
+        bg_var = tk.StringVar(value=self.cfg.get("card_bg", CARD_BG))
+        radius_var = tk.StringVar(value=str(self.cfg.get("card_radius", 14)))
+        alpha_var = tk.DoubleVar(value=float(self.cfg.get("alpha", 0.88)))
+        alpha_label = ttk.Label(af, text="", width=5)
 
         # 即時預覽（與實際卡片同色）
-        prev_outer = tk.Frame(af, bg="#3a3a48", padx=1, pady=1)
+        prev_outer = tk.Frame(af, bg=border_for(bg_var.get()), padx=1, pady=1)
         prev_outer.grid(row=0, column=0, columnspan=4, sticky="we", pady=(0, 16))
-        prev_inner = tk.Frame(prev_outer, bg="#1c1c28")
+        prev_inner = tk.Frame(prev_outer, bg=bg_var.get())
         prev_inner.pack(fill="both", expand=True)
         prev_orig = tk.Label(prev_inner, text="Hello, how are you?",
-                             bg="#1c1c28", justify="left", anchor="w")
+                             bg=bg_var.get(), justify="left", anchor="w")
         prev_orig.pack(fill="x", padx=12, pady=(8, 2))
         prev_trans = tk.Label(prev_inner, text="你好，你好嗎？",
-                              bg="#1c1c28", justify="left", anchor="w")
+                              bg=bg_var.get(), justify="left", anchor="w")
         prev_trans.pack(fill="x", padx=12, pady=(0, 8))
 
         def refresh_preview(*a):
@@ -1745,10 +1837,20 @@ class TranslatorApp:
                 tsz = max(6, min(48, int(trans_size_var.get())))
             except Exception:
                 tsz = int(self.cfg.get("card_trans_size", 12))
-            prev_orig.config(fg=orig_color_var.get() or "#b8b8c8",
-                             font=("Microsoft YaHei UI", osz))
-            prev_trans.config(fg=trans_color_var.get() or "#ffffff",
-                              font=("Microsoft YaHei UI", tsz, "bold"))
+            bg = bg_var.get().strip() or CARD_BG
+            try:
+                prev_outer.config(bg=border_for(bg))
+                prev_inner.config(bg=bg)
+                prev_orig.config(bg=bg, fg=orig_color_var.get() or "#b8b8c8",
+                                 font=("Microsoft YaHei UI", osz))
+                prev_trans.config(bg=bg, fg=trans_color_var.get() or "#ffffff",
+                                  font=("Microsoft YaHei UI", tsz, "bold"))
+            except Exception:
+                pass
+            try:
+                alpha_label.config(text="{:d}%".format(int(round(alpha_var.get() * 100))))
+            except Exception:
+                pass
 
         def color_btn(parent, var):
             b = tk.Button(parent, width=6, relief="groove", cursor="hand2",
@@ -1776,6 +1878,9 @@ class TranslatorApp:
             sp.bind("<KeyRelease>", refresh_preview)
             return sp
 
+        for _v in (bg_var, radius_var, orig_color_var, trans_color_var):
+            _v.trace_add("write", refresh_preview)
+
         ttk.Label(af, text="輸入文字").grid(row=1, column=0, sticky="w", padx=(0, 10), pady=6)
         size_spin(af, orig_size_var).grid(row=1, column=1, sticky="w", pady=6)
         ttk.Label(af, text="字級").grid(row=1, column=2, sticky="e", padx=(10, 6), pady=6)
@@ -1786,9 +1891,31 @@ class TranslatorApp:
         ttk.Label(af, text="字級").grid(row=2, column=2, sticky="e", padx=(10, 6), pady=6)
         color_btn(af, trans_color_var).grid(row=2, column=3, sticky="w", pady=6)
 
-        ttk.Label(af, foreground="#888888", wraplength=390, justify="left",
+        ttk.Label(af, text="卡片底色").grid(row=3, column=0, sticky="w", padx=(0, 10), pady=6)
+        color_btn(af, bg_var).grid(row=3, column=1, sticky="w", pady=6)
+        ttk.Label(af, foreground="#888888",
+                  text="外框線自動配色").grid(row=3, column=2, columnspan=2,
+                                         sticky="w", padx=(10, 0), pady=6)
+
+        ttk.Label(af, text="不透明度").grid(row=4, column=0, sticky="w", padx=(0, 10), pady=6)
+        ttk.Scale(af, from_=0.30, to=1.0, variable=alpha_var, orient="horizontal",
+                  length=170, command=refresh_preview).grid(
+                      row=4, column=1, columnspan=2, sticky="w", pady=6)
+        alpha_label.grid(row=4, column=3, sticky="w", pady=6)
+
+        ttk.Label(af, text="圓角").grid(row=5, column=0, sticky="w", padx=(0, 10), pady=6)
+        r_sp = ttk.Spinbox(af, from_=0, to=40, width=6, textvariable=radius_var,
+                           command=refresh_preview)
+        r_sp.bind("<KeyRelease>", refresh_preview)
+        r_sp.grid(row=5, column=1, sticky="w", pady=6)
+        ttk.Label(af, foreground="#888888",
+                  text="像素（0 = 直角）").grid(row=5, column=2, columnspan=2,
+                                          sticky="w", padx=(10, 0), pady=6)
+
+        ttk.Label(af, foreground="#888888", wraplength=400, justify="left",
                   text="點顏色方塊開啟調色盤；上方即為實際卡片樣貌，調整會立即更新。"
-                  ).grid(row=3, column=0, columnspan=4, sticky="w", pady=(12, 0))
+                       "外框線由底色自動推導，換底色時會跟著協調。"
+                  ).grid(row=6, column=0, columnspan=4, sticky="w", pady=(12, 0))
 
         # ==================== 按鈕 ====================
         btns = ttk.Frame(win, padding=(10, 0, 10, 10))
@@ -1821,6 +1948,15 @@ class TranslatorApp:
                 self.cfg["card_trans_size"] = 12
             self.cfg["card_orig_color"] = orig_color_var.get().strip() or "#b8b8c8"
             self.cfg["card_trans_color"] = trans_color_var.get().strip() or "#ffffff"
+            self.cfg["card_bg"] = bg_var.get().strip() or CARD_BG
+            try:
+                self.cfg["card_radius"] = max(0, min(40, int(radius_var.get().strip())))
+            except ValueError:
+                self.cfg["card_radius"] = 14
+            try:
+                self.cfg["alpha"] = max(0.30, min(1.0, float(alpha_var.get())))
+            except Exception:
+                self.cfg["alpha"] = 0.88
             save_config(self.cfg)
             self.card.apply_style()
             self.status_var.set("✓ 已儲存設定")

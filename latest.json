@@ -1,6 +1,6 @@
 {
-  "version": "1.1.0",
+  "version": "1.2.0",
   "url": "https://github.com/Linch-Lab/linlingo/releases/latest",
-  "notes": "修正第二外語翻譯（英文輸入未翻成第二語言），並將卡片改為置中於目前螢幕、拖曳後固定位置。",
+  "notes": "卡片外觀可自訂底色與不透明度，並改為圓角外框。",
   "mandatory": false
 }

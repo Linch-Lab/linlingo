@@ -37,6 +37,13 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://linlingo.billlinch.com/keyboard-hook-and-ime.html</loc>
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://linlingo.billlinch.com/keyboard-hook-and-ime.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://linlingo.billlinch.com/en/keyboard-hook-and-ime.html"/>
+    <changefreq>yearly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://linlingo.billlinch.com/sponsor.html</loc>
     <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://linlingo.billlinch.com/sponsor.html"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://linlingo.billlinch.com/en/sponsor.html"/>
@@ -69,6 +76,11 @@
   <url>
     <loc>https://linlingo.billlinch.com/en/faq.html</loc>
     <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://linlingo.billlinch.com/en/keyboard-hook-and-ime.html</loc>
+    <changefreq>yearly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>

@@ -16,6 +16,8 @@ Windows 全域熱鍵即時翻譯工具。
 > **為什麼不攔截鍵盤？**
 > 大多數同類工具用低階鍵盤掛鉤攔截打字，這會讓**中文／日文／韓文輸入法無法組字**。
 > LinLingo 改為「卡片本身即輸入面」，因此注音、拼音都能正常使用。
+>
+> 完整技術說明：〈[為什麼我不攔截鍵盤](https://linlingo.billlinch.com/keyboard-hook-and-ime.html)〉
 
 ![LinLingo 操作示範](assets/demo.gif)
 

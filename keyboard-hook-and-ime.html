@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>為什麼我不攔截鍵盤：中文輸入法與翻譯工具的設計取捨 - LinLingo</title>
+<meta name="description" content="想做即時翻譯工具，最直覺的做法是攔截鍵盤——但那會讓注音、拼音等中文輸入法無法組字。本文說明 IME 的組字原理、低階鍵盤掛鉤為什麼會破壞它，以及改用「卡片即輸入面」的實作取捨。">
+<link rel="canonical" href="https://linlingo.billlinch.com/keyboard-hook-and-ime.html">
+<link rel="alternate" hreflang="zh-Hant" href="https://linlingo.billlinch.com/keyboard-hook-and-ime.html">
+<link rel="alternate" hreflang="en" href="https://linlingo.billlinch.com/en/keyboard-hook-and-ime.html">
+<link rel="icon" href="assets/app.ico">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<meta property="og:image" content="https://linlingo.billlinch.com/assets/og-image.png">
+<link rel="stylesheet" href="assets/style.css">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://linlingo.billlinch.com/keyboard-hook-and-ime.html">
+<meta property="og:title" content="為什麼我不攔截鍵盤：中文輸入法與翻譯工具的設計取捨">
+<meta property="og:description" content="低階鍵盤掛鉤會讓注音、拼音無法組字。說明 IME 的組字原理，以及改用「卡片即輸入面」的實作取捨。">
+<meta name="twitter:card" content="summary">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "headline": "為什麼我不攔截鍵盤：中文輸入法與翻譯工具的設計取捨",
+  "description": "說明中文輸入法（IME）的組字原理、低階鍵盤掛鉤為什麼會破壞組字，以及改用卡片即輸入面的實作取捨。",
+  "inLanguage": "zh-Hant",
+  "datePublished": "2026-10-01",
+  "dateModified": "2026-10-01",
+  "author": {"@type": "Person", "name": "Ching-Hsien Lin", "url": "https://linch-lab.github.io/"},
+  "publisher": {"@type": "Organization", "name": "LinLingo"},
+  "mainEntityOfPage": "https://linlingo.billlinch.com/keyboard-hook-and-ime.html"
+}
+</script>
+</head>
+<body>
+
+<header class="site">
+  <p class="brand"><a href="index.html"><img src="assets/logo.svg" alt="LinLingo" height="30"></a></p>
+  <span class="ver">v1.2.0</span>
+  <span class="spacer"></span>
+  <span class="lang"><a href="en/keyboard-hook-and-ime.html">English</a></span>
+</header>
+
+<nav class="site">
+  <a href="index.html">首頁</a>
+  <a href="download.html">下載</a>
+  <a href="guide.html">使用說明</a>
+  <a href="setup.html">翻譯引擎設定</a>
+  <a href="faq.html">常見問題</a>
+  <a class="here" href="keyboard-hook-and-ime.html">技術筆記</a>
+  <a href="sponsor.html">贊助</a>
+</nav>
+
+<h1>為什麼我不攔截鍵盤</h1>
+
+<p class="lead">
+做一個「在任何地方打字都能即時翻譯」的工具，最直覺的做法是<b>攔截鍵盤</b>。
+我沒有這樣做，因為那會讓中文、日文、韓文的輸入法整組失效。
+這篇說明原因，以及我改用什麼做法。
+</p>
+
+<h2>直覺的做法：攔截鍵盤</h2>
+
+<p>
+Windows 提供低階鍵盤掛鉤（<code>SetWindowsHookExW(WH_KEYBOARD_LL, ...)</code>），
+可以在按鍵送進任何應用程式之前先看一眼，甚至把它吃掉。
+</p>
+
+<p>
+對翻譯工具來說這非常誘人：使用者在任何輸入框打字，我都能即時看到，
+翻譯完再模擬按鍵補回去。使用者完全感覺不到中間發生了什麼事。
+</p>
+
+<p>問題出在「吃掉按鍵」這個動作。</p>
+
+<h2>中文輸入法不是「打一個鍵送一個字」</h2>
+
+<p>注音、拼音這類輸入法的實際流程是：</p>
+
+<ol>
+  <li>你依序按下 <code>ㄋ</code>、<code>ㄧ</code>、<code>ˇ</code></li>
+  <li>輸入法把這些按鍵收進一個<b>組字緩衝區</b>，在畫面上顯示「ㄋㄧˇ」與候選字</li>
+  <li>你選字（按數字鍵或空白鍵）</li>
+  <li>輸入法才把「你」這個字<b>提交</b>給應用程式</li>
+</ol>
+
+<p>
+關鍵在第 1 步到第 3 步之間<b>完全沒有「已完成的文字」</b>，
+只有一串還沒定案的按鍵。
+</p>
+
+<p>
+低階鍵盤掛鉤如果回傳 1（吃掉按鍵），這些按鍵<b>根本不會進到輸入法</b>。
+輸入法收不到 <code>ㄋ</code>，自然組不出字。
+</p>
+
+<h3>症狀長什麼樣</h3>
+
+<table>
+  <tr><th>你按了什麼</th><th>期望</th><th>攔截鍵盤後實際發生</th></tr>
+  <tr><td><code>ㄋ</code> <code>ㄧ</code> <code>ˇ</code></td><td>出現候選字「你」</td><td>什麼都沒出現</td></tr>
+  <tr><td>選字鍵</td><td>「你」被送進輸入框</td><td>沒有東西可以選</td></tr>
+  <tr><td>改打英文</td><td>正常</td><td>正常（所以一開始不容易發現問題）</td></tr>
+</table>
+
+<p>
+這也是為什麼這類問題常常「上線後才被回報」——
+開發者自己用英文測試時一切正常。
+</p>
+
+<h3>為什麼「只在組字時放行」很難做對</h3>
+
+<p>
+聽起來很簡單：偵測到輸入法正在組字就放行，否則才攔截。實際上有三個障礙：
+</p>
+
+<ul>
+  <li>
+    <b>沒有可靠的全域訊號。</b>
+    <code>ImmGetCompositionString</code> 需要目標視窗的 IME context，
+    但低階掛鉤是在別人的執行緒之外被呼叫的，拿不到。
+  </li>
+  <li>
+    <b>各應用程式實作不同。</b>
+    Chrome、Discord、各種 Electron 應用自己畫游標、自己處理輸入，
+    連「游標在哪」都不一定問得到，更別說組字狀態。
+  </li>
+  <li>
+    <b>時序太窄。</b>
+    組字是毫秒級的狀態轉換，掛鉤函式必須立刻決定放行或攔截，
+    沒有時間做任何查詢。
+  </li>
+</ul>
+
+<p>
+結果就是做出來的東西「大部分時候可以」，
+但中文使用者會不定時遇到打不出字，而且難以重現。
+</p>
+
+<h2>代價與效益</h2>
+
+<table>
+  <tr><th></th><th>攔截鍵盤</th><th>不攔截（卡片輸入）</th></tr>
+  <tr>
+    <td>操作感受</td>
+    <td>看起來像魔法，直接在原輸入框打字</td>
+    <td>多一張卡片，但按鍵行為完全正常</td>
+  </tr>
+  <tr>
+    <td>中文／日文／韓文</td>
+    <td><b>組字被打斷</b></td>
+    <td>正常</td>
+  </tr>
+  <tr>
+    <td>密碼欄位</td>
+    <td>可能一併被攔截</td>
+    <td>不會經過，因為卡片是獨立視窗</td>
+  </tr>
+  <tr>
+    <td>需要處理的邊角</td>
+    <td>Backspace、選字、貼上、拖曳選取、組合鍵…每一種都要判斷</td>
+    <td>作業系統與輸入法自己處理</td>
+  </tr>
+</table>
+
+<p>
+左邊那一欄的「邊角」比想像中多。一旦攔截了鍵盤，就等於要重新實作
+一輪編輯器的行為——而且永遠追不上真正的編輯器。
+</p>
+
+<h2>我的做法：卡片本身就是輸入面</h2>
+
+<ol>
+  <li>你在原本的輸入框按 <code>Ctrl+Alt+T</code></li>
+  <li>一張浮動卡片出現並取得焦點</li>
+  <li>你在<b>卡片裡</b>用自己的語言打字——注音、拼音、日文 IME 全部正常</li>
+  <li>譯文即時顯示在卡片下方</li>
+  <li>按 <code>Enter</code>，譯文回填到原本的輸入框</li>
+</ol>
+
+<p>
+關鍵是<b>沒有人在猜你在打什麼</b>。你打的字是進入一個真正的文字方塊，
+作業系統與輸入法用它原本的方式運作。
+</p>
+
+<p>這樣反而少掉很多問題：</p>
+
+<ul>
+  <li>不必判斷「這一鍵是打字還是快捷鍵」</li>
+  <li>不必處理 Backspace、選字、貼上、拖曳選取</li>
+  <li>不必猜輸入法是不是正在組字</li>
+  <li>不必擔心密碼欄位被攔截</li>
+</ul>
+
+<h2>實作上的幾個選擇</h2>
+
+<h3>用 RegisterHotKey，不用鍵盤掛鉤</h3>
+
+<p>
+全域熱鍵有兩種做法：低階鍵盤掛鉤，或 <code>RegisterHotKey</code>。
+</p>
+
+<p>
+<code>RegisterHotKey</code> 讓系統在偵測到組合鍵時送一個 <code>WM_HOTKEY</code> 給你，
+<b>按鍵本身仍然照常送到目前的視窗</b>。這正是我要的——
+我只想被通知，不想擋住任何東西。
+</p>
+
+<p>註冊三個熱鍵就夠了：</p>
+
+<table>
+  <tr><th>熱鍵</th><th>用途</th></tr>
+  <tr><td><code>Ctrl+Alt+T</code></td><td>開關翻譯模式</td></tr>
+  <tr><td><code>Ctrl+Alt+C</code></td><td>把焦點拉回卡片</td></tr>
+  <tr><td><code>Ctrl+Alt+Enter</code></td><td>在任何地方直接回填譯文</td></tr>
+</table>
+
+<p>
+值得一提的是 <code>Ctrl+Alt+Enter</code> 這種「在別人的視窗裡也要生效」的熱鍵，
+<b>只有</b> <code>RegisterHotKey</code> 做得到——鍵盤掛鉤反而做不到，
+因為它拿不到「現在是哪個輸入框有焦點」的可靠資訊。
+</p>
+
+<h3>焦點：SetForegroundWindow 的前景鎖</h3>
+
+<p>
+Windows 限制只有前景程序能搶前景。工具列在背景執行，要把焦點交給卡片或還給目標輸入框時，
+常常會被拒絕。
+</p>
+
+<p>
+繞過的方式是在呼叫前先模擬一次 <code>Alt</code> 的按下與放開：
+</p>
+
+<pre><code>inject_key(VK_MENU)
+inject_key(VK_MENU, KEYEVENTF_KEYUP)
+user32.SetForegroundWindow(target)</code></pre>
+
+<p>
+這個小動作會讓系統認為「使用者剛剛有輸入」，
+因而解除前景鎖定。<code>Alt</code> 本身不會產生任何輸入內容，是安全的選擇。
+</p>
+
+<h3>回填：剪貼簿 + Ctrl+V</h3>
+
+<p>
+把譯文送進別人的輸入框有兩種做法：逐鍵模擬，或透過剪貼簿。
+</p>
+
+<p>
+逐鍵模擬（<code>SendInput</code>）聽起來比較乾淨，實際上很容易出錯：
+中文、日文、emoji 不一定能用 <code>VK_PACKET</code> 正確送出，
+而且會觸發目標應用程式的按鍵處理邏輯。
+</p>
+
+<p>
+剪貼簿 + <code>Ctrl+V</code> 幾乎在所有應用程式都可靠，
+唯一的缺點是會覆蓋使用者原本的剪貼簿內容。
+</p>
+
+<h3>卡片定位：為什麼不用 Tk 的 geometry</h3>
+
+<p>
+這是一個小但容易卡住的地方。
+Tk 的 <code>geometry()</code> 把負數座標解讀成「距離畫面右側／下側多少」，
+所以「把視窗移到左邊那顆螢幕」這種需求會直接失敗，視窗會跳到奇怪的角落。
+</p>
+
+<p>
+解法是繞過 Tk，直接用 Win32 的 <code>SetWindowPos</code>，
+並帶上 <code>SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE</code>——
+只改位置，不動大小、不動疊放順序、也不搶焦點。
+</p>
+
+<h3>DPI：多螢幕不同縮放的比例問題</h3>
+
+<p>
+兩顆螢幕縮放比例不同時，未宣告 DPI 感知的程序會拿到被系統換算過的座標，
+視窗就會偏移。開頭先宣告一次即可：
+</p>
+
+<pre><code>user32.SetProcessDpiAwarenessContext(-4)   # PER_MONITOR_AWARE_V2</code></pre>
+
+<h2>那什麼時候我還是會用掛鉤</h2>
+
+<p>
+掛鉤不是邪惡的，只是被用錯地方。如果工具的目的是<b>記錄或阻擋</b>按鍵
+（例如密碼管理員、巨集錄製），掛鉤就是正確的工具。
+</p>
+
+<p>
+差別在於<b>你的工具需不需要知道「使用者打了什麼字」</b>。
+需要，就得面對輸入法的問題；不需要，就不要碰鍵盤。
+</p>
+
+<h2>結語</h2>
+
+<p>
+「不攔截鍵盤」讓我少掉一整類 bug，代價只是多一張卡片。
+對一個要在各種應用程式裡工作的工具來說，這個交換很划算。
+</p>
+
+<p>
+如果你也在做類似的工具，希望這篇能幫你少走一段路。
+</p>
+
+<p class="note">
+<b>LinLingo</b> 是把上述取捨實作出來的 Windows 即時翻譯工具：
+按 <code>Ctrl+Alt+T</code> 開卡片、打字、<code>Enter</code> 回填，
+注音與拼音都能正常組字。
+<a href="index.html">看說明</a> ·
+<a href="download.html">下載</a> ·
+<a href="https://github.com/Linch-Lab/linlingo">原始碼</a>
+</p>
+
+<footer class="site">
+  LinLingo — Windows 全域熱鍵即時翻譯工具 ·
+  <a href="https://github.com/Linch-Lab/linlingo/blob/main/LICENSE">MIT License</a><br>
+  <a href="https://github.com/Linch-Lab/linlingo">GitHub</a> ·
+  <a href="https://github.com/Linch-Lab/linlingo/blob/main/CHANGELOG.md">變更紀錄</a> ·
+  <a href="https://github.com/Linch-Lab/linlingo/issues">問題回報</a> ·
+  <a href="sponsor.html">贊助</a><br>
+  本頁為靜態網頁，不使用 JavaScript、不收集任何資料。
+</footer>
+
+</body>
+</html>

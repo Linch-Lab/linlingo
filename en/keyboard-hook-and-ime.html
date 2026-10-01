@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Why I Don't Hook the Keyboard: IMEs and Instant Translation - LinLingo</title>
+<meta name="description" content="The obvious way to build an instant translation tool is to hook the keyboard. That breaks Chinese, Japanese and Korean input methods. Here is how IME composition works, why a low-level keyboard hook destroys it, and what I did instead.">
+<link rel="canonical" href="https://linlingo.billlinch.com/en/keyboard-hook-and-ime.html">
+<link rel="alternate" hreflang="zh-Hant" href="https://linlingo.billlinch.com/keyboard-hook-and-ime.html">
+<link rel="alternate" hreflang="en" href="https://linlingo.billlinch.com/en/keyboard-hook-and-ime.html">
+<link rel="icon" href="../assets/app.ico">
+<link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
+<meta property="og:image" content="https://linlingo.billlinch.com/assets/og-image.png">
+<link rel="stylesheet" href="../assets/style.css">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://linlingo.billlinch.com/en/keyboard-hook-and-ime.html">
+<meta property="og:title" content="Why I Don't Hook the Keyboard: IMEs and Instant Translation">
+<meta property="og:description" content="A low-level keyboard hook breaks CJK input method composition. How IMEs work, and what I built instead.">
+<meta name="twitter:card" content="summary">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "headline": "Why I Don't Hook the Keyboard: IMEs and Instant Translation",
+  "description": "How CJK input method composition works, why a low-level keyboard hook destroys it, and the design trade-offs behind a floating-card translator.",
+  "inLanguage": "en",
+  "datePublished": "2026-10-01",
+  "dateModified": "2026-10-01",
+  "author": {"@type": "Person", "name": "Ching-Hsien Lin", "url": "https://linch-lab.github.io/"},
+  "publisher": {"@type": "Organization", "name": "LinLingo"},
+  "mainEntityOfPage": "https://linlingo.billlinch.com/en/keyboard-hook-and-ime.html"
+}
+</script>
+</head>
+<body>
+
+<header class="site">
+  <p class="brand"><a href="index.html"><img src="../assets/logo.svg" alt="LinLingo" height="30"></a></p>
+  <span class="ver">v1.2.0</span>
+  <span class="spacer"></span>
+  <span class="lang"><a href="../keyboard-hook-and-ime.html">繁體中文</a></span>
+</header>
+
+<nav class="site">
+  <a href="index.html">Home</a>
+  <a href="download.html">Download</a>
+  <a href="guide.html">Guide</a>
+  <a href="setup.html">Setup</a>
+  <a href="faq.html">FAQ</a>
+  <a class="here" href="keyboard-hook-and-ime.html">Notes</a>
+  <a href="sponsor.html">Sponsor</a>
+</nav>
+
+<h1>Why I don't hook the keyboard</h1>
+
+<p class="lead">
+The obvious way to build a tool that translates as you type anywhere is to
+<b>hook the keyboard</b>. I didn't, because it silently destroys Chinese,
+Japanese and Korean input methods. Here is why — and what I built instead.
+</p>
+
+<h2>The obvious approach: hook the keyboard</h2>
+
+<p>
+Windows lets you install a low-level keyboard hook
+(<code>SetWindowsHookExW(WH_KEYBOARD_LL, ...)</code>) that sees every keystroke
+before it reaches any application — and can swallow it.
+</p>
+
+<p>
+For a translation tool that is very tempting. You see exactly what the user
+types in any text box, translate it, and inject the result back. The user never
+notices anything happened.
+</p>
+
+<p>The problem is that "swallow it" part.</p>
+
+<h2>An IME does not send one character per key</h2>
+
+<p>Here is what actually happens when you type with a phonetic IME:</p>
+
+<ol>
+  <li>You press the keys for the sounds, one after another</li>
+  <li>The IME collects them into a <b>composition buffer</b> and shows you the
+      in-progress text plus a candidate list</li>
+  <li>You pick a candidate (number key, space, and so on)</li>
+  <li><b>Only then</b> does the IME commit the finished character to the application</li>
+</ol>
+
+<p>
+Between step 1 and step 3 there is <b>no finished text at all</b> — just a
+sequence of undecided keystrokes.
+</p>
+
+<p>
+If a low-level hook returns 1 (consume), those keystrokes <b>never reach the
+IME</b>. The IME never sees the first key, so it can never compose anything.
+</p>
+
+<h3>What it looks like</h3>
+
+<table>
+  <tr><th>You press</th><th>Expected</th><th>With a keyboard hook</th></tr>
+  <tr><td>the phonetic keys</td><td>a candidate list appears</td><td>nothing appears</td></tr>
+  <tr><td>a selection key</td><td>the character is inserted</td><td>there is nothing to select</td></tr>
+  <tr><td>plain English instead</td><td>works</td><td>works — which is why the bug ships</td></tr>
+</table>
+
+<p>
+That last row is the trap. A developer testing in English sees a tool that works
+perfectly. The breakage only shows up for users of CJK input methods, and only
+sometimes.
+</p>
+
+<h3>Why "just pass through while composing" is hard</h3>
+
+<p>
+It sounds easy: detect that an IME is composing, let those keys through,
+intercept everything else. In practice there are three obstacles:
+</p>
+
+<ul>
+  <li>
+    <b>There is no reliable global signal.</b>
+    <code>ImmGetCompositionString</code> needs the IME context of the target
+    window, and a low-level hook runs outside that thread.
+  </li>
+  <li>
+    <b>Applications differ.</b>
+    Chrome, Discord and every Electron app draw their own caret and handle
+    input themselves. You often cannot even ask where the caret is, let alone
+    whether a composition is active.
+  </li>
+  <li>
+    <b>The timing window is tiny.</b>
+    Composition is a millisecond-scale state transition. The hook callback must
+    decide pass-or-block immediately, with no time to look anything up.
+  </li>
+</ul>
+
+<p>
+The result is something that works "most of the time" — and CJK users hit
+unpredictable failures that are very hard to reproduce.
+</p>
+
+<h2>The trade-off</h2>
+
+<table>
+  <tr><th></th><th>Hook the keyboard</th><th>Don't (type in the card)</th></tr>
+  <tr>
+    <td>Feel</td>
+    <td>Magical — you type right where you were</td>
+    <td>One extra card, but every key behaves normally</td>
+  </tr>
+  <tr>
+    <td>Chinese / Japanese / Korean</td>
+    <td><b>Composition breaks</b></td>
+    <td>Works</td>
+  </tr>
+  <tr>
+    <td>Password fields</td>
+    <td>May be intercepted too</td>
+    <td>Never touched — the card is a separate window</td>
+  </tr>
+  <tr>
+    <td>Edge cases you now own</td>
+    <td>Backspace, candidate selection, paste, drag-select, modifier combos…</td>
+    <td>The OS and the IME handle all of it</td>
+  </tr>
+</table>
+
+<p>
+That left column is longer than it looks. Once you intercept the keyboard you
+are re-implementing a text editor — and you will never catch up with the real one.
+</p>
+
+<h2>What I built instead: the card is the input surface</h2>
+
+<ol>
+  <li>Press <code>Ctrl+Alt+T</code> in whatever text box you were using</li>
+  <li>A floating card appears and takes focus</li>
+  <li>You type in <b>the card</b> in your own language — Zhuyin, Pinyin, Japanese IME all work</li>
+  <li>The translation appears below as you type</li>
+  <li>Press <code>Enter</code> and the translation is inserted back into the original box</li>
+</ol>
+
+<p>
+The important part is that <b>nobody is guessing what you are typing</b>. Your
+keystrokes go into a real text widget, and the OS and the IME do exactly what
+they were designed to do.
+</p>
+
+<p>A lot of problems simply disappear:</p>
+
+<ul>
+  <li>No deciding whether a key is text or a shortcut</li>
+  <li>No re-implementing Backspace, candidate selection, paste or drag-select</li>
+  <li>No guessing whether an IME is mid-composition</li>
+  <li>No risk of swallowing password fields</li>
+</ul>
+
+<h2>Implementation choices worth mentioning</h2>
+
+<h3>RegisterHotKey, not a keyboard hook</h3>
+
+<p>
+There are two ways to get a global hotkey: a low-level hook, or
+<code>RegisterHotKey</code>.
+</p>
+
+<p>
+<code>RegisterHotKey</code> asks the system to post a <code>WM_HOTKEY</code>
+when the combination is pressed, and <b>the keystroke still goes to the focused
+window as usual</b>. That is exactly what I want — to be notified, not to block
+anything.
+</p>
+
+<table>
+  <tr><th>Hotkey</th><th>Purpose</th></tr>
+  <tr><td><code>Ctrl+Alt+T</code></td><td>Toggle translation mode</td></tr>
+  <tr><td><code>Ctrl+Alt+C</code></td><td>Bring focus back to the card</td></tr>
+  <tr><td><code>Ctrl+Alt+Enter</code></td><td>Insert the translation from anywhere</td></tr>
+</table>
+
+<p>
+The third one is worth noting: a hotkey that must work <i>while another window
+has focus</i> is only reliably achievable with <code>RegisterHotKey</code>.
+A keyboard hook actually makes it harder, because it cannot reliably tell which
+text box currently has focus.
+</p>
+
+<h3>Focus and the foreground lock</h3>
+
+<p>
+Windows only lets the foreground process change the foreground window. A tray
+app is in the background, so handing focus to the card — or giving it back to
+the target text box — gets refused.
+</p>
+
+<p>The workaround is to tap <code>Alt</code> first:</p>
+
+<pre><code>inject_key(VK_MENU)
+inject_key(VK_MENU, KEYEVENTF_KEYUP)
+user32.SetForegroundWindow(target)</code></pre>
+
+<p>
+That makes the system believe the user just provided input, which releases the
+lock. <code>Alt</code> on its own produces no text, so it is a safe choice.
+</p>
+
+<h3>Inserting the result: clipboard plus Ctrl+V</h3>
+
+<p>
+You can insert text into someone else's text box either by simulating each
+keystroke, or through the clipboard.
+</p>
+
+<p>
+Simulating keystrokes (<code>SendInput</code>) sounds cleaner but breaks down in
+practice: CJK text and emoji do not always survive <code>VK_PACKET</code>, and
+you end up triggering the target app's key handling.
+</p>
+
+<p>
+Clipboard plus <code>Ctrl+V</code> works almost everywhere. Its only real
+downside is overwriting whatever the user had copied.
+</p>
+
+<h3>Window placement: why not Tk's geometry()</h3>
+
+<p>
+A small thing that cost real time. Tk's <code>geometry()</code> interprets
+negative coordinates as "this far from the right/bottom edge", so "move this
+window onto the monitor to the left" silently lands somewhere strange.
+</p>
+
+<p>
+The fix is to skip Tk and call Win32 <code>SetWindowPos</code> with
+<code>SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE</code> — reposition only,
+without resizing, restacking or stealing focus.
+</p>
+
+<h3>DPI and mixed-scale monitors</h3>
+
+<p>
+On a multi-monitor setup with different scale factors, a process that has not
+declared DPI awareness receives virtualised coordinates and the window drifts.
+One call at startup fixes it:
+</p>
+
+<pre><code>user32.SetProcessDpiAwarenessContext(-4)   # PER_MONITOR_AWARE_V2</code></pre>
+
+<h2>When a hook <i>is</i> the right tool</h2>
+
+<p>
+Hooks are not evil; they are just used in the wrong place. If your tool's job is
+to <b>record or block</b> keystrokes — a password manager, a macro recorder —
+a hook is exactly right.
+</p>
+
+<p>
+The question to ask is: <b>does my tool need to know what the user typed?</b>
+If yes, you have to solve the IME problem. If no, keep your hands off the keyboard.
+</p>
+
+<h2>Closing</h2>
+
+<p>
+Not hooking the keyboard removed an entire class of bugs. The cost was one extra
+card. For a tool that has to work inside every other application, that was an
+easy trade.
+</p>
+
+<p>If you are building something similar, I hope this saves you some time.</p>
+
+<p class="note">
+<b>LinLingo</b> is the Windows translator that came out of these trade-offs:
+press <code>Ctrl+Alt+T</code>, type in the card, press <code>Enter</code> to
+insert. Zhuyin, Pinyin and other IMEs compose normally.
+<a href="index.html">Overview</a> ·
+<a href="download.html">Download</a> ·
+<a href="https://github.com/Linch-Lab/linlingo">Source</a>
+</p>
+
+<footer class="site">
+  LinLingo — instant translation for Windows ·
+  <a href="https://github.com/Linch-Lab/linlingo/blob/main/LICENSE">MIT License</a><br>
+  <a href="https://github.com/Linch-Lab/linlingo">GitHub</a> ·
+  <a href="https://github.com/Linch-Lab/linlingo/blob/main/CHANGELOG.md">Changelog</a> ·
+  <a href="https://github.com/Linch-Lab/linlingo/issues">Issues</a> ·
+  <a href="sponsor.html">Sponsor</a><br>
+  This is a static page. No JavaScript, no tracking.
+</footer>
+
+</body>
+</html>

@@ -20,7 +20,7 @@ import os
 import sys
 
 import numpy as np
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw
 
 # ---------------------------------------------------------------- palette
 BLUE_TOP = (86, 122, 255)      # lighter, top-left
